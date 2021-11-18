@@ -15,6 +15,12 @@ services:
     depends_on:
       tomcat:
         condition: service_healthy
+    healthcheck:
+      test: 'curl -f http://localhost/'
+      interval: 9s
+      timeout: 2s
+      retries: 1
+      start_period: 1s
 
   tomcat:
     image: 'tomcat:jdk17-corretto'

@@ -24,7 +24,7 @@ services:
       - 'security'
     volumes:
       - type: bind
-        source: './build/libs/servlet2-1.0.0.war'
+        source: './build/libs/xml-servlet-1.0.0.war'
         target: '/usr/local/tomcat/webapps/foo.war'
         read_only: true
       - type: bind
@@ -41,7 +41,7 @@ services:
         source: tomcat_temp
         target: '/usr/local/tomcat/temp'
     healthcheck:
-      test: 'curl -f http://localhost:8080/foo/d1/d2/health----------------------------------------------------------------------'
+      test: 'curl -f http://localhost:8080/foo/d1/d2/health'
       interval: 10s
       timeout: 2s
       retries: 1

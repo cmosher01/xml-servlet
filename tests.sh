@@ -1,0 +1,10 @@
+#!/bin/sh -x
+curl --version
+curl 'http://127.0.0.1/test/archive/d1/d2'
+curl 'http://127.0.0.1/test/archive/d1/d2/'
+curl 'http://127.0.0.1/test/archive/d1/d2/hello.html'
+curl 'http://127.0.0.1/test/archive/d1/d2/hello.html/'
+curl 'http://127.0.0.1/test/archive/d1/d2/sub'
+curl 'http://127.0.0.1/test/archive/d1/d2/sub/'
+curl 'http://127.0.0.1/test/archive/d1/d2/sub/links.xhtml'
+curl 'http://127.0.0.1/test/archive/d1/d2/sub/links.xhtml/'

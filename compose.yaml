@@ -1,0 +1,53 @@
+services:
+
+  nginx:
+    image: 'nginx'
+    volumes:
+      - type: bind
+        source: './src/main/nginx/nginx.conf'
+        target: '/etc/nginx/nginx.conf'
+        read_only: true
+    ports:
+      - published: 80
+        target: 80
+    links:
+      - tomcat
+    depends_on:
+      tomcat:
+        condition: service_healthy
+
+  tomcat:
+    image: 'tomcat:jdk17-corretto'
+    command:
+      - 'catalina.sh'
+      - 'run'
+      - 'security'
+    volumes:
+      - type: bind
+        source: './build/libs/servlet2-1.0.0.war'
+        target: '/usr/local/tomcat/webapps/foo.war'
+        read_only: true
+      - type: bind
+        source: './src/main/tomcat/conf'
+        target: '/usr/local/tomcat/conf'
+        read_only: true
+      - type: volume
+        source: tomcat_logs
+        target: '/usr/local/tomcat/logs'
+      - type: volume
+        source: tomcat_work
+        target: '/usr/local/tomcat/work'
+      - type: volume
+        source: tomcat_temp
+        target: '/usr/local/tomcat/temp'
+    healthcheck:
+      test: 'curl -f http://localhost:8080/foo/d1/d2/health----------------------------------------------------------------------'
+      interval: 10s
+      timeout: 2s
+      retries: 1
+      start_period: 3s
+
+volumes:
+  tomcat_logs:
+  tomcat_work:
+  tomcat_temp:

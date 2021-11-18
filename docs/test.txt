@@ -1,0 +1,91 @@
+see RFC 3986: https://datatracker.ietf.org/doc/html/rfc3986#appendix-A
+
+   segment       = *pchar
+   segment-nz    = 1*pchar
+   segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
+                 ; non-zero-length segment without any colon ":"
+
+   pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+
+   pct-encoded   = "%" HEXDIG HEXDIG
+
+   unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+   reserved      = gen-delims / sub-delims
+   gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+   sub-delims    = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+
+
+
+
+also see: https://web.archive.org/web/20130514031802/http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding
+
+
+
+
+
+
+curl -v --path-as-is 'http://127.0.0.1/test/archive/d1/d2/test/slash%2fslash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_%3f%23_!$&%27()*+,%3d_x/test.txt?showInvalid'
+can't handle passing these through to tomcat in path segments:
+    %2f  /
+    %5B  [
+    %5D  ]
+    %3B  ;
+
+
+
+header: x-forwarded-prefix = /test/archive/
+header: host = 127.0.0.1
+header: x-real-ip = 192.168.0.1
+header: x-forwarded-proto = http
+header: x-forwarded-host = 127.0.0.1
+header: x-forwarded-port = 80
+header: nginx-request = GET /test/archive/d1/d2/test/slash%2fslash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_%3f%23_!$&%27()*+,%3d_x/test.txt?showInvalid HTTP/1.1
+header: nginx-request-uri = /test/archive/d1/d2/test/slash%2fslash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_%3f%23_!$&%27()*+,%3d_x/test.txt?showInvalid
+header: nginx-uri = /test/archive/d1/d2/test/slash/slash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_?#_!$&'()*+,=_x/test.txt
+header: connection = close
+header: user-agent = curl/7.80.0
+header: accept = */*
+The request had no cookies attached.
+requestURL: http://127.0.0.1/foo/d1/d2/test/slash/slash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_%3F%23_!$&'()*+,=_x/test.txt
+scheme: http
+serverName: 127.0.0.1
+serverPort: 80
+requestURI: /foo/d1/d2/test/slash/slash/a-z_A-Z_0-9.~/param_lost;p=foo/x_:@_%3F%23_!$&'()*+,=_x/test.txt
+contextPath: /foo
+servletPath: /d1/d2
+pathInfo: /test/slash/slash/a-z_A-Z_0-9.~/param_lost/x_:@_?#_!$&'()*+,=_x/test.txt
+queryString: showInvalid
+pathTranslated: /usr/local/tomcat/webapps/foo/test/slash/slash/a-z_A-Z_0-9.~/param_lost/x_:@_?#_!$&'()*+,=_x/test.txt
+remoteHost: 192.168.0.1
+remoteAddr: 192.168.0.1
+remotePort: 59110
+remoteUser: null
+localName: 524cdfa17db6
+localAddr: 192.168.0.2
+localPort: 8080
+contentType: null
+encoding: UTF-8
+query parameter: showInvalid = 
+attr: org.apache.catalina.AccessLog.RemoteAddr = 192.168.0.1
+attr: org.apache.catalina.AccessLog.Protocol = HTTP/1.0
+attr: org.apache.tomcat.remoteAddr = 192.168.0.1
+attr: org.apache.catalina.AccessLog.ServerName = 127.0.0.1
+attr: org.apache.catalina.AccessLog.ServerPort = 80
+attr: org.apache.tomcat.request.forwarded = true
+attr: org.apache.catalina.AccessLog.RemoteHost = 192.168.0.1
+----------------------------------------------------------------
+path info (raw):
+    /test/slash/slash/a-z_A-Z_0-9.~/param_lost/x_:@_?#_!$&'()*+,=_x/test.txt
+----------------------------------------------------------------
+parsed 7 path segments: <good> or [invalid]:
+    <test>
+    <slash>
+    <slash>
+    [a-z_A-Z_0-9.~]
+    <param_lost>
+    [x_:@_?#_!$&'()*+,=_x]
+    <test.txt>
+----------------------------------------------------------------
+constructed path of webapp resource:
+    /test/slash/slash/a-z_A-Z_0-9.~/param_lost/x_:@_?#_!$&'()*+,=_x/test.txt
+----------------------------------------------------------------

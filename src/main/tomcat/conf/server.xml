@@ -1,0 +1,24 @@
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener"/>
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off"/>
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/>
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"/>
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener"/>
+  <Service name="Catalina">
+    <Connector port="8080"/>
+    <Engine name="Catalina" defaultHost="default">
+      <Host name="default" autoDeploy="false">
+          <Valve className="org.apache.catalina.valves.RemoteIpValve"/>
+          <Valve
+              className="org.apache.catalina.valves.AccessLogValve"
+              buffered="false"
+              pattern="%h %l %u [%{yyyy-MM-dd'T'HH:mm:ss.SSSX}t] &quot;%r&quot; %s %b"
+              directory="/dev"
+              prefix="stdout"
+              suffix=""
+              fileDateFormat=""
+          />
+      </Host>
+    </Engine>
+  </Service>
+</Server>

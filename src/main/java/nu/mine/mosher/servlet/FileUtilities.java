@@ -3,8 +3,10 @@ package nu.mine.mosher.servlet;
 import lombok.*;
 
 import java.nio.file.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public final class FileUtilities {
     public static final Path HOME = getHome();
@@ -49,9 +51,31 @@ public final class FileUtilities {
         return path;
     }
 
-    private static final Pattern INF = Pattern.compile("(?i)^/[^/]*-INF(/.*|)$");
+    private static final Pattern INF = Pattern.compile("(?i)^[^/]+-INF$");
 
     public static boolean isInternalInformation(@NonNull final String pathResource) {
-        return INF.matcher(pathResource).matches();
+        return segs(pathResource).anyMatch(s -> INF.matcher(s).matches());
+    }
+
+    public static Stream<String> segs(@NonNull final String path) {
+        return Arrays.stream(path.split(SLASH, -1)).filter(s -> !s.isBlank());
+    }
+
+    @NonNull
+    public static String getLeafSegment(@NonNull final String path) {
+        val segs = segs(path).toList();
+        if (segs.size() == 0) {
+            // TODO what to do here?
+            return "";
+        }
+        return segs.get(segs.size()-1);
+    }
+
+    @NonNull
+    public static String forceRelative(@NonNull String path) {
+        while (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        return path;
     }
 }

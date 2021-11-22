@@ -29,4 +29,35 @@
         <filter-name>FailedRequestFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <filter>
+        <filter-name>PlayFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.PlayFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>PlayFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>SerializeDomFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.SerializeDomFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SerializeDomFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>XsltFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/proxypath.xslt</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>XsltFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

@@ -8,7 +8,6 @@ import lombok.val;
 import java.io.IOException;
 import java.util.*;
 
-@WebFilter("/*")
 public class PlayFilter extends HttpFilter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {

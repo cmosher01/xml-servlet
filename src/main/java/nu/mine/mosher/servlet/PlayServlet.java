@@ -1,6 +1,5 @@
 package nu.mine.mosher.servlet;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +17,6 @@ import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Element;
 
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import javax.xml.transform.dom.DOMResult;
@@ -27,6 +24,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +42,7 @@ import static nu.mine.mosher.servlet.XmlUtils.t;
 public class PlayServlet extends HttpServlet {
     private static final boolean ALLOW_PUBLIC_DEBUG_FLAG = true;
 //    private static final Charset DEFAULT_RESPONSE_CHARSET = StandardCharsets.UTF_8;
+    private static final Charset DEFAULT_UNKNOWN_CHARSET = Charset.forName("windows-1252");
 
 
 
@@ -51,8 +50,6 @@ public class PlayServlet extends HttpServlet {
     @SneakyThrows
     protected void doGet(@NonNull final HttpServletRequest req, @NonNull final HttpServletResponse resp) {
         val ctx = req.getServletContext();
-
-        logXmlInfo(ctx);
 
         val debug = ALLOW_PUBLIC_DEBUG_FLAG && Optional.ofNullable(req.getParameter("debug")).isPresent();
 
@@ -74,9 +71,7 @@ public class PlayServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute(
-            "nu.mine.mosher.xml.pathPrefix",
-            buildPrefixPath(Optional.ofNullable(req.getHeader("x-forwarded-prefix")), Optional.ofNullable(req.getServletPath())));
+        req.setAttribute("nu.mine.mosher.xml.pathPrefix", buildPrefixPath(req));
 
 //        resp.setContentType("application/xhtml+xml");
 //        val doc = buildPage();
@@ -150,8 +145,9 @@ public class PlayServlet extends HttpServlet {
 //                out.println("-".repeat(64));
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             } else {
+                // TODO split directory handling out into its own filter
+                // TODO change dir handling to: make java pojo, cvt to xml, and format with xslt
                 if (dir.isPresent()) {
-
                     if (trailingSlash) {
 //                        out.println("Path has trailing slash; good.");
                         val body = buildPage();
@@ -175,12 +171,12 @@ public class PlayServlet extends HttpServlet {
 //                        }
 
                         val liHome = e(ul, "li");
-                        xlink(liHome, FileUtilities.SLASH, "home");
+                        link(liHome, FileUtilities.SLASH, "home");
 
 //                        if (dir.isPresent()) {
 //                            out.println("    " + link("../", "up"));
                             val liUp = e(ul, "li");
-                            xlink(liUp, "../", "up");
+                            link(liUp, "../", "up");
 //                        } else {
 //                            out.println("    " + link("./", "up"));
 //                            val liUp = e(ul, "li");
@@ -189,7 +185,8 @@ public class PlayServlet extends HttpServlet {
 
                         if (dir.get().stream().anyMatch(e -> filterDirectoryEntry(e, Path.of(roundtrip)))) {
 //                             dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).map(e -> convertDirectoryEntry(e, Path.of(roundtrip))).forEach(r -> out.println("    " + r));
-                            dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).forEach(e -> convertDirectoryEntryX(ul, e, Path.of(roundtrip)));
+                            // TODO: sort directory entries
+                            dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).forEach(e -> convertDirectoryEntry(ul, e, Path.of(roundtrip)));
                         } else {
 //                            out.println("This directory is empty.");
                             val li = e(ul, "li");
@@ -270,15 +267,9 @@ public class PlayServlet extends HttpServlet {
         ////////////////////////////////////////////////////
     }
 
-    private static void logXmlInfo(ServletContext ctx) throws ParserConfigurationException, TransformerConfigurationException {
-        val document = XmlUtils.getDocumentBuilderFactory().newDocumentBuilder().newDocument();
-        ctx.log("XML DOM: "+document.getClass());
-        val transformer = XmlUtils.getTransformerFactory().newTransformer();
-        ctx.log("XML XSLT: "+transformer.getClass());
-    }
-
-    private static String buildPrefixPath(@NonNull final Optional<String> forwarded, final Optional<String> servlet) {
+    private static String buildPrefixPath(@NonNull final HttpServletRequest request) {
         final Stream<String> s1;
+        val forwarded = Optional.ofNullable(request.getHeader("x-forwarded-prefix"));
         if (forwarded.isPresent()) {
             s1 = segs(forwarded.get());
         } else {
@@ -286,6 +277,7 @@ public class PlayServlet extends HttpServlet {
         }
 
         final Stream<String> s2;
+        val servlet = Optional.ofNullable(request.getServletPath());
         if (servlet.isPresent()) {
             s2 = segs(servlet.get());
         } else {
@@ -305,7 +297,7 @@ public class PlayServlet extends HttpServlet {
 
         val contentType = TikaConfig.getDefaultConfig().getDetector().detect(in, metatika);
         ctx.log("Detected content type: "+contentType);
-        val characterEncoding = TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika);
+        val characterEncoding = Optional.ofNullable(TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika)).orElse(DEFAULT_UNKNOWN_CHARSET);
         ctx.log("Detected character encoding: "+characterEncoding.name());
 
         if (contentType.equals(MediaType.TEXT_HTML)) {
@@ -352,7 +344,7 @@ public class PlayServlet extends HttpServlet {
     }
 
     @NonNull
-    private static void convertDirectoryEntryX(@NonNull final Element parent, @NonNull final String entry, @NonNull final Path cwd) {
+    private static void convertDirectoryEntry(@NonNull final Element parent, @NonNull final String entry, @NonNull final Path cwd) {
         val slash = entry.endsWith(FileUtilities.SLASH);
         val pathOrig = Path.of(entry);
         val pathRel = cwd.relativize(pathOrig);
@@ -363,10 +355,10 @@ public class PlayServlet extends HttpServlet {
         }
 
         val li = e(parent, "li");
-        xlink(li, ret, ret);
+        link(li, ret, ret);
     }
 
-    private static void xlink(@NonNull final Element parent, @NonNull final String path, @NonNull final String display) {
+    private static void link(@NonNull final Element parent, @NonNull final String path, @NonNull final String display) {
         val a = e(parent, "a");
         a.setAttribute("href", path);
         t(a, display);

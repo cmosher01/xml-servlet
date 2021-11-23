@@ -1,5 +1,6 @@
 package nu.mine.mosher.servlet;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,26 +8,37 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.mime.MediaType;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nu.mine.mosher.servlet.FileUtilities.segs;
-import static nu.mine.mosher.servlet.XmlUtils.*;
+import static nu.mine.mosher.servlet.XmlUtils.XHTML_NAMESPACE;
+import static nu.mine.mosher.servlet.XmlUtils.e;
+import static nu.mine.mosher.servlet.XmlUtils.t;
 
 @WebServlet("/d1/d2/*")
 public class PlayServlet extends HttpServlet {
@@ -39,6 +51,8 @@ public class PlayServlet extends HttpServlet {
     @SneakyThrows
     protected void doGet(@NonNull final HttpServletRequest req, @NonNull final HttpServletResponse resp) {
         val ctx = req.getServletContext();
+
+        logXmlInfo(ctx);
 
         val debug = ALLOW_PUBLIC_DEBUG_FLAG && Optional.ofNullable(req.getParameter("debug")).isPresent();
 
@@ -256,6 +270,13 @@ public class PlayServlet extends HttpServlet {
         ////////////////////////////////////////////////////
     }
 
+    private static void logXmlInfo(ServletContext ctx) throws ParserConfigurationException, TransformerConfigurationException {
+        val document = XmlUtils.getDocumentBuilderFactory().newDocumentBuilder().newDocument();
+        ctx.log("XML DOM: "+document.getClass());
+        val transformer = XmlUtils.getTransformerFactory().newTransformer();
+        ctx.log("XML XSLT: "+transformer.getClass());
+    }
+
     private static String buildPrefixPath(@NonNull final Optional<String> forwarded, final Optional<String> servlet) {
         final Stream<String> s1;
         if (forwarded.isPresent()) {
@@ -274,43 +295,46 @@ public class PlayServlet extends HttpServlet {
         return Stream.concat(s1, s2).collect(Collectors.joining(FileUtilities.SLASH, FileUtilities.SLASH, ""));
     }
 
-    private static void send(@NonNull final URL res, @NonNull final HttpServletRequest req, @NonNull final HttpServletResponse resp) throws IOException, TransformerException {
-        val inb = new BufferedInputStream(res.openStream());
+    private static void send(@NonNull final URL res, @NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response) throws IOException, TransformerException {
+        val ctx = request.getServletContext();
 
-        val contentType = new Tika().detect(inb, res.getPath());
+        val metatika = new Metadata();
+        metatika.set(TikaCoreProperties.RESOURCE_NAME_KEY, res.getPath());
 
-        // TODO convert "text/html" files to XHTML using jsoup
+        val in = TikaInputStream.get(res, metatika);
 
-        resp.setContentType(contentType);
-        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        val contentType = TikaConfig.getDefaultConfig().getDetector().detect(in, metatika);
+        ctx.log("Detected content type: "+contentType);
+        val characterEncoding = TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika);
+        ctx.log("Detected character encoding: "+characterEncoding.name());
 
-        if (isXmlContentType(contentType)) {
+        if (contentType.equals(MediaType.TEXT_HTML)) {
+            val document = Jsoup.parse(in, characterEncoding.name(), res.toExternalForm());
+            document.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
+            document.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
+            document.outputSettings().charset(StandardCharsets.UTF_8);
+            document.outputSettings().prettyPrint(true);
+            document.getElementsByTag("html").first().attr("xmlns", XHTML_NAMESPACE);
+            request.setAttribute(XmlFilterUtilities.ATTR_DOM, W3CDom.convert(document));
+        } else if (isXmlContentType(contentType)) {
             val result = new DOMResult();
-            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(inb), result);
-            req.setAttribute(XmlFilterUtilities.ATTR_DOM, result.getNode());
+            XmlUtils.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);
+            request.setAttribute(XmlFilterUtilities.ATTR_DOM, result.getNode());
         } else {
-            try (val inr = new InputStreamReader(inb, StandardCharsets.UTF_8); val out = resp.getWriter()) {
+            response.setContentType(contentType.toString());
+            response.setCharacterEncoding(characterEncoding.name());
+            try (val inr = new InputStreamReader(in, characterEncoding); val out = response.getWriter()) {
                 inr.transferTo(out);
             }
         }
     }
 
-    private static boolean isXmlContentType(@NonNull final String contentType) {
-        if (contentType.equals("text/xml")) {
-            return true;
-        }
-
-        if (contentType.equals("application/xml")) {
-            return true;
-        }
-
-        if (contentType.endsWith("+xml")) {
-            return true;
-        }
-
-        return false;
+    private static boolean isXmlContentType(@NonNull final MediaType contentType) {
+        return
+            contentType.toString().equals("text/xml") ||
+            contentType.equals(MediaType.APPLICATION_XML) ||
+            contentType.getSubtype().endsWith("+xml");
     }
-
 
     private static boolean filterDirectoryEntry(@NonNull final String entry, @NonNull final Path cwd) {
         if (FileUtilities.isInternalInformation(entry)) {
@@ -350,7 +374,7 @@ public class PlayServlet extends HttpServlet {
 
     @SneakyThrows
     private static Element buildPage() {
-        val doc = DocumentBuilderFactory.newNSInstance().newDocumentBuilder().newDocument();
+        val doc = XmlUtils.getDocumentBuilderFactory().newDocumentBuilder().newDocument();
 
         val html = e(doc, "html");
 

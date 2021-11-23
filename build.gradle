@@ -15,8 +15,14 @@ repositories {
 
 dependencies {
     providedCompile group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: 'latest.release'
-    implementation group: 'org.apache.tika', name: 'tika-parsers', version: 'latest.release', ext: 'pom'
+
     implementation group: 'org.apache.tika', name: 'tika-core', version: 'latest.release'
+    implementation group: 'org.apache.tika', name: 'tika-parsers-standard-package', version: 'latest.release', {
+        exclude group: 'xml-apis'
+    }
+
+    implementation group: 'org.jsoup', name: 'jsoup', version: 'latest.release'
+
     runtimeOnly group: 'xerces', name: 'xercesImpl', version: 'latest.release', {
         exclude group: 'xml-apis'
     }

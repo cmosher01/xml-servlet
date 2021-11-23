@@ -3,26 +3,21 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.*;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 
 /**
  * Given a DOM Node object (in a request attribute), this filter serializes
  * it to the response. In this case, it sets the response's character encoding
  * to URF-8, and closes the response's output stream. If the content type of the
- * response is not already set, then it sets it to "application/xhtml_xml".
+ * response is not already set, then it sets it to "application/xhtml+xml".
  *
  *  Otherwise (if the attribute does not exist, or is of the wrong datatype),
  * then the response's output stream is unaffected.
@@ -57,7 +52,7 @@ public class SerializeDomFilter extends HttpFilter {
     }
 
     private static void serialize(@NonNull final Node node, @NonNull final OutputStream out) throws TransformerException {
-        val tf = TransformerFactory.newInstance().newTransformer();
+        val tf = XmlUtils.getTransformerFactory().newTransformer();
 
         tf.setOutputProperty(OutputKeys.METHOD, "xml");
         tf.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");

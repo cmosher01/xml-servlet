@@ -3,6 +3,9 @@ package nu.mine.mosher.servlet;
 import lombok.*;
 import org.w3c.dom.*;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
+
 public final class XmlUtils {
     public static final String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
 
@@ -20,5 +23,13 @@ public final class XmlUtils {
 
     private static Document getDoc(@NonNull final Node parent) {
         return (parent instanceof Document doc) ? doc : parent.getOwnerDocument();
+    }
+
+    public static DocumentBuilderFactory getDocumentBuilderFactory() {
+        return DocumentBuilderFactory.newNSInstance("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl", XmlUtils.class.getClassLoader());
+    }
+
+    public static TransformerFactory getTransformerFactory() {
+        return TransformerFactory.newInstance("net.sf.saxon.jaxp.SaxonTransformerFactory", XmlUtils.class.getClassLoader());
     }
 }

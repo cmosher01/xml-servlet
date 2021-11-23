@@ -42,7 +42,7 @@ public class XsltFilter extends HttpFilter {
         val optNode = XmlFilterUtilities.dom(req);
         if (optNode.isPresent()) {
             ctx.log("Will process XSLT: "+this.urlXslt);
-            val transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(this.urlXslt.toExternalForm()));
+            val transformer = XmlUtils.getTransformerFactory().newTransformer(new StreamSource(this.urlXslt.toExternalForm()));
             val result = new DOMResult();
             req.getAttributeNames().asIterator().forEachRemaining(n -> transformer.setParameter(n, req.getAttribute(n).toString()));
             transformer.transform(new DOMSource(optNode.get()), result);

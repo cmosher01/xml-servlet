@@ -14,7 +14,6 @@ import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
-import org.w3c.dom.Element;
 
 
 import javax.xml.transform.TransformerException;
@@ -24,26 +23,16 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static nu.mine.mosher.servlet.FileUtilities.segs;
-import static nu.mine.mosher.servlet.XmlUtils.XHTML_NAMESPACE;
-import static nu.mine.mosher.servlet.XmlUtils.e;
-import static nu.mine.mosher.servlet.XmlUtils.t;
+import static nu.mine.mosher.servlet.XmlUtilities.XHTML_NAMESPACE;
 
 @WebServlet("/d1/d2/*")
 public class PlayServlet extends HttpServlet {
     private static final boolean ALLOW_PUBLIC_DEBUG_FLAG = true;
-//    private static final Charset DEFAULT_RESPONSE_CHARSET = StandardCharsets.UTF_8;
-    private static final Charset DEFAULT_UNKNOWN_CHARSET = Charset.forName("windows-1252");
-
 
 
     @Override
@@ -55,10 +44,10 @@ public class PlayServlet extends HttpServlet {
 
         val safePathInfo = Optional.ofNullable(req.getPathInfo()).orElse("");
         val trailingSlash = safePathInfo.endsWith(FileUtilities.SLASH);
-        val pathIsInvalid = segs(safePathInfo).anyMatch(FileUtilities::invalidName);
+        val pathIsInvalid = FileUtilities.segs(safePathInfo).anyMatch(FileUtilities::invalidName);
 
-        val roundtrip = FileUtilities.buildPath(segs(safePathInfo).toList(), trailingSlash);
-        val roundtripWithoutTrailingSlash = FileUtilities.buildPath(segs(safePathInfo).toList(), false);
+        val roundtrip = FileUtilities.buildPath(FileUtilities.segs(safePathInfo).toList(), true, trailingSlash);
+        val roundtripWithoutTrailingSlash = FileUtilities.buildPath(FileUtilities.segs(safePathInfo).toList(), true, false);
 
 
 
@@ -66,12 +55,11 @@ public class PlayServlet extends HttpServlet {
             return; // OK
         }
 
-        if (pathIsInvalid && !debug) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URI: invalid character");
-            return;
-        }
+//        if (pathIsInvalid && !debug) {
+//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URI: invalid character");
+//            return;
+//        }
 
-        req.setAttribute("nu.mine.mosher.xml.pathPrefix", buildPrefixPath(req));
 
 //        resp.setContentType("application/xhtml+xml");
 //        val doc = buildPage();
@@ -82,34 +70,34 @@ public class PlayServlet extends HttpServlet {
         //{
             ////////////////////////////////////
 
-            var dir = Optional.<Set<String>>empty();
+//            var dir = Optional.<Set<String>>empty();
             var res = Optional.<URL>empty();
             {
                 val u = Optional.ofNullable(ctx.getResource(roundtrip));
                 if (u.isPresent()) {
                     val p = Path.of(u.get().toURI());
 
-                    ctx.log("Resource is present. URL: " + u.get().toExternalForm());
-                    ctx.log("                     URI: " + u.get().toURI().toASCIIString());
-                    ctx.log("                    Path: " + p);
-                    ctx.log("                  exists: " + Files.exists(p));
-                    ctx.log("             isDirectory: " + Files.isDirectory(p));
-                    ctx.log("           isRegularFile: " + Files.isRegularFile(p));
-                    ctx.log("                    size: " + Files.size(p));
-                    ctx.log("        lastModifiedTime: " + Files.getLastModifiedTime(p));
+//                    ctx.log("Resource is present. URL: " + u.get().toExternalForm());
+//                    ctx.log("                     URI: " + u.get().toURI().toASCIIString());
+//                    ctx.log("                    Path: " + p);
+//                    ctx.log("                  exists: " + Files.exists(p));
+//                    ctx.log("             isDirectory: " + Files.isDirectory(p));
+//                    ctx.log("           isRegularFile: " + Files.isRegularFile(p));
+//                    ctx.log("                    size: " + Files.size(p));
+//                    ctx.log("        lastModifiedTime: " + Files.getLastModifiedTime(p));
 
-                    if (Files.isDirectory(p)) {
-                        dir = Optional.ofNullable(ctx.getResourcePaths(roundtrip));
-                        if (dir.isEmpty()) {
-                            dir = Optional.of(Set.of());
-                        }
-                    } else if (Files.isRegularFile(p)) {
+//                    if (Files.isDirectory(p)) {
+//                        dir = Optional.ofNullable(ctx.getResourcePaths(roundtrip));
+//                        if (dir.isEmpty()) {
+//                            dir = Optional.of(Set.of());
+//                        }
+                    /*} else*/ if (Files.isRegularFile(p)) {
                         res = u;
-                    } else {
-                        ctx.log("Resource exists, but cannot determine if it is a file or a directory.");
+//                    } else {
+//                        ctx.log("Resource exists, but cannot determine if it is a file or a directory.");
                     }
-                } else {
-                    ctx.log("Resource not found.");
+//                } else {
+//                    ctx.log("Resource not found.");
                 }
             }
 
@@ -140,19 +128,20 @@ public class PlayServlet extends HttpServlet {
 //            out.println("-".repeat(64));
 
 
-            if (FileUtilities.isInternalInformation(roundtrip)) {
+//            if (FileUtilities.isInternalInformation(roundtrip)) {
 //                out.println("Detected INF request; ignoring.");
 //                out.println("-".repeat(64));
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            } else {
+//                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+//            } else
+            {
                 // TODO split directory handling out into its own filter
                 // TODO change dir handling to: make java pojo, cvt to xml, and format with xslt
-                if (dir.isPresent()) {
-                    if (trailingSlash) {
+//                if (dir.isPresent()) {
+//                    if (trailingSlash) {
 //                        out.println("Path has trailing slash; good.");
-                        val body = buildPage();
-                        req.setAttribute(XmlFilterUtilities.ATTR_DOM, body.getOwnerDocument());
-                        val ul = e(body, "ul");
+//                        val body = buildPage();
+//                        req.setAttribute(XmlFilterUtilities.ATTR_DOM, body.getOwnerDocument());
+//                        val ul = e(body, "ul");
 //                        out.println("    " + link("/", "website home"));
 //                        val liHomeWebsite = e(ul, "li");
 //                        xlink(liHomeWebsite, "/", "website home");
@@ -170,44 +159,45 @@ public class PlayServlet extends HttpServlet {
 //                            }
 //                        }
 
-                        val liHome = e(ul, "li");
-                        link(liHome, FileUtilities.SLASH, "home");
+//                        val liHome = e(ul, "li");
+//                        link(liHome, FileUtilities.SLASH, "home");
 
 //                        if (dir.isPresent()) {
 //                            out.println("    " + link("../", "up"));
-                            val liUp = e(ul, "li");
-                            link(liUp, "../", "up");
+//                            val liUp = e(ul, "li");
+//                            link(liUp, "../", "up");
 //                        } else {
 //                            out.println("    " + link("./", "up"));
 //                            val liUp = e(ul, "li");
 //                            xlink(liUp, "./", "up");
 //                        }
 
-                        if (dir.get().stream().anyMatch(e -> filterDirectoryEntry(e, Path.of(roundtrip)))) {
+//                        val entries = dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).toList();
+//                        if (!entries.isEmpty()) {
 //                             dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).map(e -> convertDirectoryEntry(e, Path.of(roundtrip))).forEach(r -> out.println("    " + r));
-                            // TODO: sort directory entries
-                            dir.get().stream().filter(e -> filterDirectoryEntry(e, Path.of(roundtrip))).forEach(e -> convertDirectoryEntry(ul, e, Path.of(roundtrip)));
-                        } else {
+//                            // TODO: sort directory entries
+//                            entries.forEach(e -> convertDirectoryEntry(ul, e, Path.of(roundtrip)));
+//                        } else {
 //                            out.println("This directory is empty.");
-                            val li = e(ul, "li");
-                            t(li, "[This directory is empty.]");
-                        }
+//                            val li = e(ul, "li");
+//                            t(li, "[This directory is empty.]");
+//                        }
 //                    out.println("-".repeat(64));
 
 
 
-                    } else {
+//                    } else {
 //                        out.println("PATH DOES NOT HAVE TRAILING SLASH");
 //                        out.println("-".repeat(64));
 //                        out.println("would redirect to:");
-                        final var redir = (roundtrip.equals("/") ? FileUtilities.getLeafSegment(req.getServletPath()) : FileUtilities.getLeafSegment(roundtrip)) + FileUtilities.SLASH;
-                        ctx.log("Redirecting to: "+redir);
+//                        final var redir = (roundtrip.equals("/") ? FileUtilities.getLeafSegment(req.getServletPath()) : FileUtilities.getLeafSegment(roundtrip)) + FileUtilities.SLASH;
+//                        ctx.log("Redirecting to: "+redir);
 //                        out.println("    " + link(redir));
-                        resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                        resp.setHeader("Location", redir);
-                    }
+//                        resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+//                        resp.setHeader("Location", redir);
+//                    }
 //                    out.println("-".repeat(64));
-                } else if (res.isPresent()) {
+                /*} else*/ if (res.isPresent()) {
 //                    out.println("Found file resource:");
 //                    out.println("    " + res.get());
 //                    out.println("-".repeat(64));
@@ -239,7 +229,7 @@ public class PlayServlet extends HttpServlet {
 //                            out.println("    " + altRes.get());
 //                            out.println("-".repeat(64));
 //                            out.println("would redirect to:");
-                            final var redir = "../" + FileUtilities.getLeafSegment(roundtripWithoutTrailingSlash);
+                            final var redir = "../" ;// TODO + FileUtilities.getLeafSegment(roundtripWithoutTrailingSlash);
                             ctx.log("Redirecting to: "+redir);
 //                            out.println("    " + link(redir));
                             resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -267,118 +257,92 @@ public class PlayServlet extends HttpServlet {
         ////////////////////////////////////////////////////
     }
 
-    private static String buildPrefixPath(@NonNull final HttpServletRequest request) {
-        final Stream<String> s1;
-        val forwarded = Optional.ofNullable(request.getHeader("x-forwarded-prefix"));
-        if (forwarded.isPresent()) {
-            s1 = segs(forwarded.get());
-        } else {
-            s1 = Stream.empty();
-        }
-
-        final Stream<String> s2;
-        val servlet = Optional.ofNullable(request.getServletPath());
-        if (servlet.isPresent()) {
-            s2 = segs(servlet.get());
-        } else {
-            s2 = Stream.empty();
-        }
-
-        return Stream.concat(s1, s2).collect(Collectors.joining(FileUtilities.SLASH, FileUtilities.SLASH, ""));
-    }
-
     private static void send(@NonNull final URL res, @NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response) throws IOException, TransformerException {
-        val ctx = request.getServletContext();
-
+//        val ctx = request.getServletContext();
+//
         val metatika = new Metadata();
         metatika.set(TikaCoreProperties.RESOURCE_NAME_KEY, res.getPath());
 
-        val in = TikaInputStream.get(res, metatika);
-
-        val contentType = TikaConfig.getDefaultConfig().getDetector().detect(in, metatika);
-        ctx.log("Detected content type: "+contentType);
-        val characterEncoding = Optional.ofNullable(TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika)).orElse(DEFAULT_UNKNOWN_CHARSET);
-        ctx.log("Detected character encoding: "+characterEncoding.name());
-
-        if (contentType.equals(MediaType.TEXT_HTML)) {
-            val document = Jsoup.parse(in, characterEncoding.name(), res.toExternalForm());
-            document.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
-            document.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
-            document.outputSettings().charset(StandardCharsets.UTF_8);
-            document.outputSettings().prettyPrint(true);
-            document.getElementsByTag("html").first().attr("xmlns", XHTML_NAMESPACE);
-            request.setAttribute(XmlFilterUtilities.ATTR_DOM, W3CDom.convert(document));
-        } else if (isXmlContentType(contentType)) {
-            val result = new DOMResult();
-            XmlUtils.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);
-            request.setAttribute(XmlFilterUtilities.ATTR_DOM, result.getNode());
-        } else {
-            response.setContentType(contentType.toString());
-            response.setCharacterEncoding(characterEncoding.name());
-            try (val inr = new InputStreamReader(in, characterEncoding); val out = response.getWriter()) {
+//
+//        val contentType = TikaConfig.getDefaultConfig().getDetector().detect(in, metatika);
+//        ctx.log("Detected content type: "+contentType);
+//        val characterEncoding = Optional.ofNullable(TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika)).orElse(XmlFilterUtilities.DEFAULT_UNKNOWN_CHARSET);
+//        ctx.log("Detected character encoding: "+characterEncoding.name());
+//
+//        val mediatype = new MediaType(contentType, characterEncoding);
+//
+//        if (contentType.equals(MediaType.TEXT_HTML)) {
+//            val jsoup = Jsoup.parse(in, characterEncoding.name(), res.toExternalForm());
+//            jsoup.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
+//            jsoup.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
+//            jsoup.outputSettings().charset(StandardCharsets.UTF_8);
+//            jsoup.outputSettings().prettyPrint(true);
+//            jsoup.getElementsByTag("html").first().attr("xmlns", XHTML_NAMESPACE);
+//            request.setAttribute("sendDom", W3CDom.convert(jsoup));
+//        } else if (XmlFilterUtilities.isXmlContentType(contentType)) {
+//            val result = new DOMResult();
+//            XmlUtilities.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);
+//            request.setAttribute("sendDom", result.getNode());
+//        } else {
+//            response.setContentType(contentType.toString());
+//            response.setCharacterEncoding(characterEncoding.name());
+            try (val inr = new InputStreamReader(TikaInputStream.get(res, metatika), response.getCharacterEncoding()); val out = response.getWriter()) {
                 inr.transferTo(out);
             }
-        }
+//        }
     }
 
-    private static boolean isXmlContentType(@NonNull final MediaType contentType) {
-        return
-            contentType.toString().equals("text/xml") ||
-            contentType.equals(MediaType.APPLICATION_XML) ||
-            contentType.getSubtype().endsWith("+xml");
-    }
-
-    private static boolean filterDirectoryEntry(@NonNull final String entry, @NonNull final Path cwd) {
-        if (FileUtilities.isInternalInformation(entry)) {
-            return false;
-        }
-
-        val pathOrig = Path.of(entry);
-        val pathRel = cwd.relativize(pathOrig);
-        var n = pathRel.toString();
-        if (n.startsWith(".")) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @NonNull
-    private static void convertDirectoryEntry(@NonNull final Element parent, @NonNull final String entry, @NonNull final Path cwd) {
-        val slash = entry.endsWith(FileUtilities.SLASH);
-        val pathOrig = Path.of(entry);
-        val pathRel = cwd.relativize(pathOrig);
-
-        var ret = pathRel.toString();
-        if (slash) {
-            ret += FileUtilities.SLASH;
-        }
-
-        val li = e(parent, "li");
-        link(li, ret, ret);
-    }
-
-    private static void link(@NonNull final Element parent, @NonNull final String path, @NonNull final String display) {
-        val a = e(parent, "a");
-        a.setAttribute("href", path);
-        t(a, display);
-    }
-
-    @SneakyThrows
-    private static Element buildPage() {
-        val doc = XmlUtils.getDocumentBuilderFactory().newDocumentBuilder().newDocument();
-
-        val html = e(doc, "html");
-
-        val head = e(html, "head");
-
-        val title = e(head, "title");
-        title.setTextContent("TEST");
-
-        val css = e(head, "link");
-        css.setAttribute("rel", "stylesheet");
-        css.setAttribute("href", "/style.css");
-
-        return e(html, "body");
-    }
+    //    private static boolean filterDirectoryEntry(@NonNull final String entry, @NonNull final Path cwd) {
+//        if (FileUtilities.isInternalInformation(entry)) {
+//            return false;
+//        }
+//
+//        val pathOrig = Path.of(entry);
+//        val pathRel = cwd.relativize(pathOrig);
+//        var n = pathRel.toString();
+//        if (n.startsWith(".")) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
+//
+//    @NonNull
+//    private static void convertDirectoryEntry(@NonNull final Element parent, @NonNull final String entry, @NonNull final Path cwd) {
+//        val slash = entry.endsWith(FileUtilities.SLASH);
+//        val pathOrig = Path.of(entry);
+//        val pathRel = cwd.relativize(pathOrig);
+//
+//        var ret = pathRel.toString();
+//        if (slash) {
+//            ret += FileUtilities.SLASH;
+//        }
+//
+//        val li = e(parent, "li");
+//        link(li, ret, ret);
+//    }
+//
+//    private static void link(@NonNull final Element parent, @NonNull final String path, @NonNull final String display) {
+//        val a = e(parent, "a");
+//        a.setAttribute("href", path);
+//        t(a, display);
+//    }
+//
+//    @SneakyThrows
+//    private static Element buildPage() {
+//        val doc = XmlUtils.getDocumentBuilderFactory().newDocumentBuilder().newDocument();
+//
+//        val html = e(doc, "html");
+//
+//        val head = e(html, "head");
+//
+//        val title = e(head, "title");
+//        title.setTextContent("TEST");
+//
+//        val css = e(head, "link");
+//        css.setAttribute("rel", "stylesheet");
+//        css.setAttribute("href", "/style.css");
+//
+//        return e(html, "body");
+//    }
 }

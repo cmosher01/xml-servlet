@@ -14,7 +14,7 @@ import java.util.*;
 
 
 /**
- * Given a DOM Node object (in a request attribute), this filter serializes
+ * Given a DOM Node object (in a request attribute named by the attrIn parameter), this filter serializes
  * it to the response. In this case, it sets the response's character encoding
  * to URF-8, and closes the response's output stream. If the content type of the
  * response is not already set, then it sets it to "application/xhtml+xml".
@@ -24,35 +24,52 @@ import java.util.*;
  */
 public class SerializeDomFilter extends HttpFilter {
     private static final Charset CHARSET_RESPONSE = StandardCharsets.UTF_8;
+    private String attrIn;
 
     @Override
     @SneakyThrows
-    protected void doFilter(@NonNull final HttpServletRequest req, @NonNull final HttpServletResponse res, @NonNull final FilterChain chain) {
-        super.doFilter(req, res, chain);
+    public void init(@NonNull final FilterConfig config) {
+        super.init(config);
+        this.attrIn = XmlFilterUtilities.requireParam(config, "attrIn");
+    }
 
-        val ctx = Objects.requireNonNull(req.getServletContext());
+    @Override
+    @SneakyThrows
+    protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        super.doFilter(request, response, chain);
 
-        val optNode = XmlFilterUtilities.dom(req);
+        val ctx = Objects.requireNonNull(request.getServletContext());
+
+        val optNode = XmlFilterUtilities.dom(request, this.attrIn);
 
         if (optNode.isPresent()) {
             ctx.log("XML serialization beginning...");
-            sendXml(optNode.get(), res);
+            sendXml(optNode.get(), response);
             ctx.log("XML serialization complete.");
         }
     }
 
-    private static void sendXml(@NonNull final Node node, @NonNull final HttpServletResponse res) throws IOException, TransformerException {
-        if (Optional.ofNullable(res.getContentType()).orElse("").isBlank()) {
-            res.setContentType("application/xhtml+xml");
+    @Override
+    @SneakyThrows
+    public void destroy() {
+        this.attrIn = null;
+        super.destroy();
+    }
+
+
+
+    private static void sendXml(@NonNull final Node node, @NonNull final HttpServletResponse response) throws IOException, TransformerException {
+        if (Optional.ofNullable(response.getContentType()).orElse("").isBlank()) {
+            response.setContentType("application/xhtml+xml");
         }
-        res.setCharacterEncoding(CHARSET_RESPONSE.name());
-        try (val out = res.getOutputStream()) {
+        response.setCharacterEncoding(CHARSET_RESPONSE.name());
+        try (val out = response.getOutputStream()) {
             serialize(node, out);
         }
     }
 
     private static void serialize(@NonNull final Node node, @NonNull final OutputStream out) throws TransformerException {
-        val tf = XmlUtils.getTransformerFactory().newTransformer();
+        val tf = XmlUtilities.getTransformerFactory().newTransformer();
 
         tf.setOutputProperty(OutputKeys.METHOD, "xml");
         tf.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");

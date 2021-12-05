@@ -23,6 +23,9 @@ dependencies {
 
     implementation group: 'org.jsoup', name: 'jsoup', version: 'latest.release'
 
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: 'latest.release'
+    runtimeOnly group: 'com.fasterxml.woodstox', name: 'woodstox-core', version: 'latest.release'
+
     runtimeOnly group: 'xerces', name: 'xercesImpl', version: 'latest.release', {
         exclude group: 'xml-apis'
     }

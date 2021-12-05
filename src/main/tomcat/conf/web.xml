@@ -30,18 +30,22 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>PlayFilter</filter-name>
-        <filter-class>nu.mine.mosher.servlet.PlayFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>PlayFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--    <filter>-->
+<!--        <filter-name>PlayFilter</filter-name>-->
+<!--        <filter-class>nu.mine.mosher.servlet.PlayFilter</filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>PlayFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
     <filter>
         <filter-name>SerializeDomFilter</filter-name>
         <filter-class>nu.mine.mosher.servlet.SerializeDomFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>dom</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>SerializeDomFilter</filter-name>
@@ -49,15 +53,110 @@
     </filter-mapping>
 
     <filter>
-        <filter-name>XsltFilter</filter-name>
+        <filter-name>SetProxyPath</filter-name>
         <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>page</param-value>
+        </init-param>
         <init-param>
             <param-name>xsltPath</param-name>
             <param-value>/WEB-INF/xslt/proxypath.xslt</param-value>
         </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>dom</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>XsltFilter</filter-name>
+        <filter-name>SetProxyPath</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>ProxyPathFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.ProxyPathFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ProxyPathFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>SlashRedirectFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.SlashRedirectFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SlashRedirectFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>FormatDirectory</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>dir</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/directory.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>page</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>FormatDirectory</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>DirectoryFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.DirectoryFilter</filter-class>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>dir</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>DirectoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>ContentTypeFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.ContentTypeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ContentTypeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>HtmlToXhtmlFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.HtmlToXhtmlFilter</filter-class>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>page</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>HtmlToXhtmlFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>XmlToDomFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XmlToDomFilter</filter-class>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>dom</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>XmlToDomFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

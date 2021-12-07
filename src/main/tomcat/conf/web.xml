@@ -152,7 +152,7 @@
         <filter-class>nu.mine.mosher.servlet.XmlToDomFilter</filter-class>
         <init-param>
             <param-name>attrOut</param-name>
-            <param-value>dom</param-value>
+            <param-value>page</param-value>
         </init-param>
     </filter>
     <filter-mapping>

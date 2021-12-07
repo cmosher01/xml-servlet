@@ -16,8 +16,9 @@ import java.util.*;
 /**
  * Given a DOM Node object (in a request attribute named by the attrIn parameter), this filter serializes
  * it to the response. In this case, it sets the response's character encoding
- * to URF-8, and closes the response's output stream. If the content type of the
- * response is not already set, then it sets it to "application/xhtml+xml".
+ * to UTF-8, and closes the response's output stream.
+ *
+ * If the content type of the response is not already set, then it sets it to "application/xhtml+xml".
  *
  *  Otherwise (if the attribute does not exist, or is of the wrong datatype),
  * then the response's output stream is unaffected.
@@ -30,12 +31,12 @@ public class SerializeDomFilter extends HttpFilter {
     @SneakyThrows
     public void init(@NonNull final FilterConfig config) {
         super.init(config);
-        this.attrIn = XmlFilterUtilities.requireParam(config, "attrIn");
+        this.attrIn = ServletUtilities.requireParam(config, "attrIn");
     }
 
     @Override
     @SneakyThrows
-    protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+    public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         super.doFilter(request, response, chain);
 
         val ctx = Objects.requireNonNull(request.getServletContext());

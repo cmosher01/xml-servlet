@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import lombok.*;
 
 import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
+import javax.xml.transform.stream.StreamSource;
 import java.net.URL;
 import java.util.*;
 
@@ -23,12 +23,12 @@ public class XsltFilter extends HttpFilter {
 
         // Inspired by "Java and XSLT" by Eric M. Burke
         // xsltPath should be something like "/WEB-INF/xslt/a.xslt"
-        val path = XmlFilterUtilities.requireParam(config, "xsltPath");
+        val path = ServletUtilities.requireParam(config, "xsltPath");
         this.urlXslt = ctx.getResource(path);
         ctx.log("Found XSLT at: "+this.urlXslt);
 
-        this.attrIn = XmlFilterUtilities.requireParam(config, "attrIn");
-        this.attrOut = XmlFilterUtilities.requireParam(config, "attrOut");
+        this.attrIn = ServletUtilities.requireParam(config, "attrIn");
+        this.attrOut = ServletUtilities.requireParam(config, "attrOut");
     }
 
     @Override

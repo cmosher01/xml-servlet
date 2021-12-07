@@ -2,7 +2,7 @@ package nu.mine.mosher.servlet;
 
 import lombok.NonNull;
 
-import java.util.List;
+import java.util.*;
 
 public class UrlPath {
     private final boolean slashLeading;

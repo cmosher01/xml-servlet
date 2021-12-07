@@ -1,13 +1,14 @@
 package nu.mine.mosher.servlet;
 
-import jakarta.servlet.ServletContext;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
+import org.apache.tika.mime.MediaType;
 
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public final class ServletUtilities {
     @NonNull
@@ -33,6 +34,7 @@ public final class ServletUtilities {
         if (urlPath.isRoot()) {
             return true;
         }
+
         val r = Optional.ofNullable(ctx.getResource(urlPath.toString()));
         if (r.isEmpty()) {
             return false;
@@ -60,6 +62,24 @@ public final class ServletUtilities {
         return dir;
     }
 
+    @NonNull
+    public static String requireParam(@NonNull final FilterConfig config, @NonNull final String paramName) {
+        val s = Optional.ofNullable(config.getInitParameter(paramName)).orElse("");
+        if (s.isBlank()) {
+            throw new IllegalArgumentException("Missing init-param: "+paramName);
+        }
+        return s;
+    }
+
+    public static boolean isXmlContentType(@NonNull final MediaType contentType) {
+        return
+            contentType.getSubtype().equals("xml") ||
+                contentType.getSubtype().endsWith("+xml");
+    }
+
+
+
+    @NonNull
     private static List<DirectoryEntry> buildDir(@NonNull final Collection<String> paths, @NonNull final UrlPath urlPath) {
         val entries =
             paths

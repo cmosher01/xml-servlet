@@ -14,12 +14,12 @@ public class DirectoryFilter extends HttpFilter {
     @SneakyThrows
     public void init(@NonNull final FilterConfig config) {
         super.init(config);
-        this.attrOut = XmlFilterUtilities.requireParam(config, "attrOut");
+        this.attrOut = ServletUtilities.requireParam(config, "attrOut");
     }
 
     @Override
     @SneakyThrows
-    protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+    public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         val ctx = Objects.requireNonNull(request.getServletContext());
 
         val urlPath = ServletUtilities.pathInfo(request);

@@ -1,20 +1,18 @@
 package nu.mine.mosher.servlet;
 
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.*;
 import lombok.*;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 import static nu.mine.mosher.servlet.FileUtilities.segs;
 
 public class ProxyPathFilter extends HttpFilter {
     @Override
     @SneakyThrows
-    protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+    public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         val ctx = Objects.requireNonNull(request.getServletContext());
 
         val prefix = buildPrefixPath(request);

@@ -4,8 +4,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
 import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MediaType;
 
 import javax.xml.transform.dom.DOMResult;
@@ -19,12 +17,12 @@ public class XmlToDomFilter extends HttpFilter {
     @SneakyThrows
     public void init(@NonNull final FilterConfig config) {
         super.init(config);
-        this.attrOut = XmlFilterUtilities.requireParam(config, "attrOut");
+        this.attrOut = ServletUtilities.requireParam(config, "attrOut");
     }
 
     @Override
     @SneakyThrows
-    protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+    public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         val ctx = Objects.requireNonNull(request.getServletContext());
         ctx.log("XmlToDomFilter for "+request.getPathInfo());
 
@@ -37,7 +35,7 @@ public class XmlToDomFilter extends HttpFilter {
         val urlPath = ServletUtilities.pathInfo(request);
         val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
 
-        if (XmlFilterUtilities.isXmlContentType(mediaType) && u.isPresent()) {
+        if (ServletUtilities.isXmlContentType(mediaType) && u.isPresent()) {
             try (val in = TikaInputStream.get(u.get())) {
                 val result = new DOMResult();
                 XmlUtilities.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);

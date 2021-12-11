@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="en">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Will of Henry Sandes of Sonning, Berkshire, England, 1569</title>
+        <author/>
+        <principal>Christopher Alan Mosher</principal>
+      </titleStmt>
+      <publicationStmt>
+        <authority>Christopher Alan Mosher</authority>
+        <pubPlace>Shelton, CT, USA</pubPlace>
+        <date>2020</date>
+        <availability status="restricted">
+          <p>Copyright © 2020, Christopher Alan Mosher, Shelton, Connecticut, USA.</p>
+          <licence target="https://creativecommons.org/licenses/by-sa/4.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</licence>
+        </availability>
+      </publicationStmt>
+      <sourceDesc>
+        <bibl><title level="u">Will of Henrye Sandes, Gentleman of Sonning, Berkshire</title>,
+        <title level="m">Prerogative Court of Canterbury, Will Registers, Lyon</title>,
+        <citedRange>folios 148 (<hi rend="italic">recto</hi>, <hi rend="italic">verso</hi>), 149 (<hi rend="italic">recto</hi>)</citedRange>;
+        PROB 11/52/251; National Archives, Kew, Richmond, England.</bibl>
+      </sourceDesc>
+    </fileDesc>
+    <encodingDesc>
+      <editorialDecl>
+        <correction status="high">
+          <p>Diplomatic transcription.</p>
+        </correction>
+        <normalization method="markup">
+          <p>Only minor normalization where needed, if any, is indicated via markup.</p>
+        </normalization>
+        <punctuation marks="all" placement="internal">
+          <p>All punctuation marks in the source text have been retained, and are represented by appropriate Unicode code points.</p>
+          <p>Punctuation may be marked up with pc elements for clarification, but not exclusively.</p>
+        </punctuation>
+        <quotation marks="all">
+          <p>All quotation marks have been retained, and are represented by appropriate Unicode code points.</p>
+        </quotation>
+        <hyphenation eol="all">
+          <p>Hyphenated words that appear at the end of a line have been retained. The hyphen, if present, is represented by the Unicode code point, and marked up with a pc element. The break="no" attribute on the lb element indicates that a single word is split across the lines.</p>
+        </hyphenation>
+        <interpretation>
+          <p>Dates, places, and names may be marked up, where useful.</p>
+        </interpretation>
+      </editorialDecl>
+    </encodingDesc>
+    <profileDesc>
+      <creation>
+        <date/>
+        <rs type="place"/>
+      </creation>
+      <langUsage>
+        <language ident="en-US">English (USA)</language>
+      </langUsage>
+    </profileDesc>
+  </teiHeader>
+  <facsimile>
+    <graphic xml:id="page-000" url="https://mosher.mine.nu/ftm/Sandys Media/England &amp; Wales, Prerogative Court of Canterbury Wills, 1384-1858.jpg"/>
+    <graphic xml:id="page-001" url="https://mosher.mine.nu/ftm/Sandys Media/40611_311317-00302.jpg"/>
+    <graphic xml:id="page-002" url="https://mosher.mine.nu/ftm/Sandys Media/40611_311317-00303.jpg"/>
+  </facsimile>
+  <text>
+
+
+
+<body>
+
+<pb n="folio 148 recto" facs="#page-000"/>
+
+
+
+<head>
+<lb/>T Henrici
+<lb/>Sandes /
+</head>
+
+
+
+<ab xml:lang="en-emodeng">
+<lb/><hi rend="large">In the name of god amen</hi> in
+
+<date calendar="julian" datingMethod="julian" when-custom="1569-07-27">the xxvij<hi rend="sup">th</hi>
+daie of Iulye in the yeare of oure lorde a thowsaunde
+<lb/>fyve hundred threescore and nyne</date>
+
+I Henrye Sandes of Sonninge in the countie of Berk gentleman sicke in bodie, but
+<lb/>of good and perfecte remembraunce, thancks be gyven to almightie god, doe make and ordaine this my laste will and ~ ~
+<lb/>testamente in manno<hi rend="sup">&#xa75d;</hi> and fourme followinge, firste I giue and bequeathe my sowle into the handes of the everly beinge god
+<lb/>throughe whose marcye and mearites of Iesus his passione I truste to be saved and my bodie to the earth to be buried
+<lb/>w<hi rend="sup">t</hi>in the churche of Sonninge, or ell<c>es</c> where it shall please my executrix / And touchinge my earthelie and ~
+<lb/>trancitorie goodes I giue and bequeathe to Richarde my eldeste sonne three hundred poundes of lawfull englishe monnye
+<lb/>to be and to be deliuered to hym when he shall accomplishe th aige of twentie one yeares, Item I giue vnto my sonne ~
+<lb/>Gilberte when he shall accomplishe th aige of twentie three yeares one hundred poundes lawfull englishe monnye
+<lb/>And to eche of my daughters Anne Fraunces and Elizabethe if they wilbe ruled and advised in marriage, by myne
+<lb/>executrix and overseere or the more parte of them, whereof myne executrix to be one as longe as the shall lyve -
+<lb/>Threscore Poundes of lawfull englishe monnye, To be paide at the daie of theire seuerall marriages, or at
+<pb n="folio 148 verso" facs="#page-001"/>
+<lb/>Th aige of twentie one yeares if they happenn not to be married before they accomplish the same aige, And if it fortune my
+<lb/>saide sonne Richarde to die before th aige of xxj yeares, then I will that all his saide porcon of three hundred poundes gyven &amp;
+<lb/>bequeathed by this my laste will and testamente shalbe and remayne to my sonne Gilberte to be paide and deliuered at his aige of
+<lb/>xxiij yeares if he be then lyveinge, and if it fortune bothe my saide sonnes to die before they shall accomplishe th aiges above, ~
+<lb/>lymytted, then I will that Anne my welbeloved wife shall have twoe hundred poundes of the saide foure hundred poundes, soe
+<lb/>gyven to my saide ij sonnes, and I will th oder ij hundred poundes residewe of the saide foure hundred poundes to suche of my ~ ~
+<lb/>daughters as shalbe then lyveinge to be amongeste them equallie deuided, And if it fortune my saide sonne Gilberte to die his ~
+<lb/>elder brother lyveinge, and before the aige of xxiij yeares or anye of my daughters before they shall accomplishe theire seuerall
+<lb/>aiges of xxj yeares or be married, then I will that his her or theire porcon or porcons that shall soe decease be distributed and
+<lb/>gyven either amongeste all my childrenn or to suche or anye one of them as to myne executrix and overseers or to the more p&#x0331;te
+<lb/>of them whereof my executrix if the be then lyveinge to be one shalbe thoughte meete and conveniente, And I further will
+<lb/>that Anne my welbeloved wife for the greate assuraunce and truste w<hi rend="sup">ch</hi> I repose in her shall duringe suche tyme as the
+<lb/>shall remaine soale and vnmarried have th orderinge occupacon and vse of all and eny my childrennes porcons and legaceis to //
+<lb/>them gyven and bequeathed by this my laste will, soe that the shall stande chardged with enye of theire chardges and ~ /
+<lb/>expences towardes theire educacions and bestowinge till the saide seuerall aige of my saide childrenn or the marriage of my
+<lb/>saide daughter, accordinge to this my laste will and testamente w<hi rend="sup">t</hi>oute puttinge in lande or suretie for the same, But if
+<lb/>at anye tyme hereafter the shalbe disposed to marrie, then I will that the shall put in good and sufficiente sureties before ~
+<lb/>her marriage to my overseers for the paymente of my debtes and legaceis, and for the performaunce of this my laste will &amp;
+<lb/>testamente as farre as my goodes and chattelles shall extende, and if the
+<mod><add place="below"><metamark function="insertion">^</metamark></add> <add place="above">do</add></mod>
+not put in sufficiente suerties or shall refuse
+<lb/>soe to doe, then and fromethenceforthe I will
+<mod><add place="below"><metamark function="insertion">/</metamark></add> <add place="above">&#x00fe;&#x036d;</add></mod>
+the shall not be my executrix, and then and fromethenceforthe I will that ~
+<lb/>Richarde my sonne shalbe my
+<mod><add place="below"><metamark function="insertion">^</metamark></add> <add place="above">sole</add></mod>
+executor, and if my overseers or the more parte of them or the survyvo<hi rend="sup">&#xa75d;</hi> or survyvors of them ~
+<lb/>shall thincke necessarie that the before her saide marriage sholde put in sufficiente sureties as is aforesaide, and the shall
+<lb/>not soe doe before her marriage, then I will that all legaceis gyven to her by this my testamente and laste will shalbe ~
+<lb/>voide excepte the xx<hi rend="sup">th</hi> by <del rend="overstrike">here</del> yeare hereafter expressed,
+alsoe I give and bequeathe to my saide wife th occupacon of all my
+<lb/>messuageis fermehowse and howses at Burwaye and all orchardes gardeines pigeon howses stables barnes landes tent<c>es</c>
+<lb/>meadowes leasues pastures commens feading<c>es</c> waters fishinges wooddes and parkes, and whatsoeuer ell<c>es</c> I have by ~
+<lb/>force or meane of one Indenture demyse or lease for yeares yetto come made by Iohn late bisshopp of Sa&#xa75d; to Iohn ~
+<lb/>Sandes my late father deseased set lienge and beinge w<hi rend="sup">t</hi>in the parishe of Sonninge in the countie of Berk or ell<c>es</c> where
+<lb/>w<hi rend="sup">t</hi>in the realme of Englande with all and singlar theire appurtenaunces, To have th occupacon ~ of the saide messuageis ~
+<lb/>ferme howse and howses and other the premisses to her and her assignes, to her and theire propper vse and vses for and ~
+<lb/>duringe her life if the shall forture soe longe to remayne soale and vnmarried and my tearme of and in the premisses soe
+<lb/>longe shall endure, and after the decease or marriage of my saide wife, I give and bequeathe the residue of my saide terme
+<lb/>of and in my saide messuages howse and howses at burwaie and other the premisses, and all my righte estate intereste ~
+<lb/>title vse tearme and possessione of and in the same, togeder w<hi rend="sup">t</hi> my lease and Indenture thereof w<hi rend="sup">t</hi> all and singler theire
+app<hi rend="sup">&#xa75d;</hi>tennc<c>es</c>
+<lb/>to my saide sonne Richarde and to his assignes for and duringe the residewe of the yeare yet to come, the laste mounethe thereof
+<lb/>onelie excepte if he shall fortune soe longe to lyve or within the same tyme to die, haveing at the tyme of his decease issue /
+<lb/>of his bodie lawfullie begottenn in lyfe, Nevertheles my will is that if my saide sonne Richarde shall fortune to die ~
+<lb/>duringe the tyme to hym lymyted, then haveinge noe yssue of his bodie lawfullie begottenn in full lyfe, then and after the
+<lb/>saide intereste of my wife determined I giue will and bequeathe my tearme and the reasidue of my estate and intereste of and in the
+<lb/>saide messuageis howse and howses and other the p<add>)re</add>misses w<hi rend="sup">t</hi> all and singuler theire appurtenaunces, to Gilberte my seconde /
+<lb/>sonne and to his assignes duringe the tearme then to come in the same savinge the laste xiiij<hi rend="sup">tene</hi> daies thereof if the saide Gilbte
+<lb/>shall soe longe lyve or w<hi rend="sup">t</hi>in the same tyme shall die haveinge at the tyme of his decease yssue of his bodie lyveinge / And if
+<lb/>if fortune my sonne Gilberte alsoe to die within the tearme to hym lymyted, havinge noe yssue of his bodie lawfullie /
+<lb/>begottenn then in life, then I will that the residue of my saide tearme of and in the saide messuageis howse and howses &amp;
+<lb/>other the premisses w<hi rend="sup">t</hi> all and singler theire appurtenaunc<c>es</c> shalbe and remaine to my brother Thomas Sandes duringe /
+<lb/>all the yeares then to come in the same vpon condicon that he shall giue to eny of my saide daughters then lyveinge fouretie
+<lb/>Poundes of lawfull englishe monnye w<hi rend="sup">t</hi> in xviij mounethes after that the possessione of the premisses shall come to hym
+<lb/>And if my saide wife shall fortune to marrie, then not w<hi rend="sup">t</hi> standinge anye thinge aforesaide I give will and bequeathe to //
+<lb/>her one annuitie or yearelie rente of Twentie Poundes of lawfull english monnye yssuinge oute of my saide ~ /
+<lb/>messuageis howses landes tent<c>es</c> parke and other the premisses / To haue houlde perceyve and take the saide ~
+<pb n="folio 149 recto" facs="#page-002"/>
+<lb/>Annuitie or yearelie rente of twentie poundes vnto my saide wife and her assignes duringe thurtie yeares then nexte followinge, if the shall
+<lb/>soe longe lyve, and if my tearme and yeares doe soe longe contynewe, at twoe vsuall feastes of the yeare, that is to saie, At the feaste
+<lb/>of Th anunciacon of o<hi rend="sup">&#xa75b;</hi> ladie S<hi rend="sup">t</hi> marie the virgyn, and Saunte michaell th archaungell by even porcone to be paide, the firste /
+<lb/>paymente thereof to begynne at suche of the saide feastes that shall firste happenn after the marriage of the saide Anne my wife
+<lb/>And if it fortune the saide Annuitie or yearelie rente to be behinde in parte or in all by the space of twentie daies nexte after ~
+<lb/>anye of the saide feastes in which it oughte to be paide, then it shalbe lawfull to my saide wife and her assignes into the saide //
+<lb/>messuageis ferme howse and howses landes tenementes and other the premisses and enye parte thereof to enter and distreine, and
+<lb/>the distres theresoe taken to leade dryve and carrie awaie, and w<hi rend="sup">t</hi> her and them to ympownde and deteine vntill the saide rente w<hi rend="sup">th</hi>
+<lb/>th arrerageis thereof if anye shalbe <surplus reason="repeated">shalbe</surplus> fullie satisfied contented and paide / Alsoe I will and bequeathe to my good aunte
+<lb/>Elizabeth Boulde one
+<mod><add place="below"><metamark function="insertion">^</metamark></add> <add place="above">golde</add></mod>
+ringe of the price of xx<hi rend="sup">&#x10192;</hi>, and that the shall have her meate drinck and lodginge here with in my ~
+<lb/>howse of Burwaye w<hi rend="sup">t</hi>oute payinge anye thinge for the same duringe her naturall life accordinge to the meaninge of my late
+<lb/>fathers laste will and testamente in that behalfe, and this to be at the chardge of myne executrix, soe longe as the enioyeth that
+<lb/>howse with th appurtenaunces, vntill the same howse w<hi rend="sup">t</hi> th appurtenaunces doe fall to anye of them to whome I have bequeathed
+<lb/>it, and then at the chardges of hym or them whoe shall enioye the same / And further I give and bequeathe vnto my brother ~
+<lb/>Thomas Sandes Tenne Poundes in monnye or one geldinge at his choise and to enye of my brother Anthonye Garrarde //
+<lb/>and my cosynne Thomas Noke, and to Roberte Hammonde one goulde ringe of the price of fouretie shillinges, the, same //
+<lb/>Tenne Poundes or geldinge to my brother Thomas and eny of the saide ringes to be deliuered to my saide brother Garrarde ~
+<lb/>cosynne Noke, and Roberte hamonde within one quarter of a yeare after my decease / and alsoe I will and bequeathe to ~
+<lb/>eny of my sisters Grace Margarete Elizabeth and Marie one goulde ringe of the price of x<hi rend="sup">s</hi> to be deluered in suche tyme /
+<lb/>as the ringes abovesaide / alsoe I will and bequeathe vnto my saide wife fouretie poundes of lawfull englishe monnye ~
+<lb/>and all my corne and haye, The residewe of all my gooddes and chattelles my debtes and legaceis perfourmed, I will and bequeathe
+<lb/>to Anne my saide wife, and to my saide sonne Richarde that is to saie, th one moyetie to th one, and th oder moyetie to th oder ~
+<lb/>with oute survyvo<hi rend="sup">&#xa75b;</hi>shipp to be equallie betweene them deuided, and at his aige of xxj yeares abovesaide to be to hym deiuered, ~
+<lb/>w<hi rend="sup">h</hi> Anne shall have her saide moyetie vpon condicon aforesaide / And of this my laste will and testamente I doe ordaine and ~
+<lb/>make Anne my welbeloued wife my soale executrix in fourme aforesaide, and my brother Thomas Sandes, my brother ~
+<lb/>Anthonye Garrarde and my cosynne Thomas Noke my overseers / Prouided alwaies that where I have gyvein to my
+<lb/>sonne Richarde three hundred poundes as is aforesaid, my will is that if it shall seame good to my executrix and overseers /
+<lb/>or three of them whereof myne executrix shalbe one as longe <del rend="overstrike">as longe</del> as the lyvethe to bestowe his porcon of three hundred
+<lb/>Poundes or anye parte thereof in or vppon some bargaine of landes tenementes and heredittamentes of estate of enheritaunce
+<lb/>or for lyfe or lyfes or yeares to th use of hym and his heires, or th use of hym and his assignes as the bargaine shall fortune
+<lb/>to be, then I will that my saide sonne Richarde shall not challenge ne have the monnye that shalbe soe disbursed, but //
+<lb/>shall reste satisfied and contented with suche bargaines as shalbe made on his behalfe as is aforesaide, and I will that
+<lb/>fromethenceforthe myne executrix shalbe dischardged againste the saide Richarde of and for the paymente of the saide three
+<lb/>hundred Poundes or somuche thereof as shalbe disbursed in or vppon anye bargaines soe to be made on his behalfe, In
+<lb/>witnes whereof I have to this my laste will and testamente put my hande and seale / harrie Sandes, in the pnce of
+<lb/>VG Vincente Tuke vicar of Snninge, by me Thomas Sandes, by me Fraunces Gar<surplus reason="repeated">ar</surplus>arde, water Edmounde ~
+<lb/>Richarde Smarte, Roberte Hamonde Iohn Arnolde, Roberte Symondes, Richarde Langley
+</ab>
+
+<p xml:lang="en-emodeng">
+<lb/><hi rend="large">Memorand</hi> that theis wordes in the sedcond side of the firste leafe betwene the xj<hi rend="sup">th</hi> and xij<hi rend="sup">th</hi> lyne v&#xa76b;
+<lb/>saide seuerall aiges of my saide childrenn or the marriage of my saide daughters, and th oder lyne vnderneethe striken oute, &amp;
+<lb/>theis wordes in the firste side of the laste leafe betweene the xvj<hi rend="sup">th</hi> and xvij<hi rend="sup">th</hi> lyne (&amp; all my corne and haye) were enter //
+<lb/>lyned and the wordes of the condicon ymmediatlie followinge vi&#xa76b;, twoe lynes and a halfe striken oute by the speciall
+<lb/>appointemente of the saide henrie Sandes in the pnce of Thomas Noke, Thomas Sandes Fraunces Garrarde
+<lb/>Richarde Sma&#xa75b;te, Roberte Gifforde
+</p>
+
+<p xml:lang="la">
+<lb/><hi rend="large">Probatum</hi> fuit testamentum suprascriptum coram magro waltero haddon legum doctore curie ~ ~
+<lb/>prerogative Cantuarien comissa apud london
+<date calendar="julian" datingMethod="julian" when-custom="1570-06-10">Decimo <space quantity="1" unit="word"/> die Iunij / Anno Domini Millimo quingen
+<lb/>septuagesimo</date> / Iuramento Edwardi Orwell norij puci procuris celce et executric in hmoi testamento nominate / Cui ~ ~
+<lb/>comissa fuit admistraco omiu et singlo&#xa75d; bono&#xa75d; &amp;c / De bne &amp;c / Ad sancta Dei Evangelia Iurat
+</p>
+
+
+
+
+    </body>
+  </text>
+</TEI>

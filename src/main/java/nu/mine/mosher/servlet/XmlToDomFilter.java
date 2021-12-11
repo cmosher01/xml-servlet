@@ -40,7 +40,6 @@ public class XmlToDomFilter extends HttpFilter {
                 val result = new DOMResult();
                 XmlUtilities.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);
                 request.setAttribute(this.attrOut, result.getNode());
-                response.setContentType("application/xml");
             }
         } else {
             super.doFilter(request, response, chain);

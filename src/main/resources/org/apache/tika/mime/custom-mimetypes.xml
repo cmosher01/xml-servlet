@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info>
+  <mime-type type="application/tei+xml">
+    <glob pattern="*.tei"/>
+    <root-XML namespaceURI="http://www.tei-c.org/ns/1.0" localName="TEI"/>
+  </mime-type>
+</mime-info>

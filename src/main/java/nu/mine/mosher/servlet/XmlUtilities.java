@@ -3,7 +3,7 @@ package nu.mine.mosher.servlet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;

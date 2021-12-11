@@ -72,9 +72,10 @@ public final class ServletUtilities {
     }
 
     public static boolean isXmlContentType(@NonNull final MediaType contentType) {
+        val t = contentType.getSubtype();
         return
-            contentType.getSubtype().equals("xml") ||
-                contentType.getSubtype().endsWith("+xml");
+            t.equals("xml") ||
+            t.endsWith("+xml");
     }
 
 

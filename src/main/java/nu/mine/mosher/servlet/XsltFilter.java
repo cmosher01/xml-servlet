@@ -51,7 +51,9 @@ public class XsltFilter extends HttpFilter {
 
     @Override
     public void destroy() {
-        super.destroy();
+        this.attrOut = null;
+        this.attrIn = null;
         this.urlXslt = null;
+        super.destroy();
     }
 }

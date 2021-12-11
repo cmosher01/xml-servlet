@@ -7,8 +7,10 @@ import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.mime.MediaType;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
-import org.jsoup.nodes.*;
+import org.jsoup.nodes.Document;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -39,14 +41,18 @@ public class HtmlToXhtmlFilter extends HttpFilter {
         if (mediaType.getSubtype().equals("html") && u.isPresent()) {
             val urlResource = u.get();
             try (val in = TikaInputStream.get(urlResource)) {
-                val jsoup = Jsoup.parse(in, characterEncoding, urlResource.toExternalForm());
-                configureJsoup(jsoup);
-                request.setAttribute(this.attrOut, W3CDom.convert(jsoup));
+                request.setAttribute(this.attrOut, jsoup(characterEncoding, urlResource, in));
                 response.setContentType("application/xhtml+xml");
             }
         } else {
             super.doFilter(request, response, chain);
         }
+    }
+
+    private static org.w3c.dom.Document jsoup(@NonNull final String characterEncoding, @NonNull final URL urlResource, @NonNull final TikaInputStream in) throws IOException {
+        val jsoup = Jsoup.parse(in, characterEncoding, urlResource.toExternalForm());
+        configureJsoup(jsoup);
+        return W3CDom.convert(jsoup);
     }
 
     @Override

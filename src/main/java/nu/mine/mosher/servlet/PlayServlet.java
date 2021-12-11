@@ -22,8 +22,9 @@ public class PlayServlet extends HttpServlet {
             return; // OK
         }
 
-        if (ServletUtilities.isFile(ctx, urlPath)) {
-            send(ctx.getResource(urlPath.toString()), response);
+        val res = Optional.ofNullable(ctx.getResource(urlPath.toString()));
+        if (res.isPresent()) {
+            send(res.get(), response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

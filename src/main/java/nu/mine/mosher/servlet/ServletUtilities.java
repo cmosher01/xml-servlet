@@ -17,46 +17,18 @@ public final class ServletUtilities {
         return new UrlPath(safePathInfo);
     }
 
-    public static boolean isFile(@NonNull final ServletContext ctx, @NonNull final UrlPath urlPath) throws MalformedURLException, URISyntaxException {
-        if (urlPath.isRoot()) {
-            return false;
-        }
-
-        val r = Optional.ofNullable(ctx.getResource(urlPath.toString()));
-        if (r.isEmpty()) {
-            return false;
-        }
-
-        return Files.isRegularFile(Path.of(r.get().toURI()));
-    }
-
-    public static boolean isDirectory(@NonNull final ServletContext ctx, @NonNull final UrlPath urlPath) throws MalformedURLException, URISyntaxException {
-        if (urlPath.isRoot()) {
-            return true;
-        }
-
-        val r = Optional.ofNullable(ctx.getResource(urlPath.toString()));
-        if (r.isEmpty()) {
-            return false;
-        }
-
-        return Files.isDirectory(Path.of(r.get().toURI()));
-    }
-
     @NonNull
     public static Optional<List<DirectoryEntry>> listDirectory(@NonNull final ServletContext ctx, @NonNull final UrlPath urlPath) throws MalformedURLException, URISyntaxException {
         var dir = Optional.<List<DirectoryEntry>>empty();
 
         val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
-        if (u.isPresent()) {
-            if (Files.isDirectory(Path.of(u.get().toURI()))) {
-                var rs = Optional.ofNullable(ctx.getResourcePaths(urlPath.toString()));
-                if (rs.isEmpty()) {
-                    rs = Optional.of(Set.of());
-                }
-
-                dir = Optional.of(buildDir(rs.get(), urlPath));
+        if (u.isPresent() && urlPath.slashTrailing()) {
+            var rs = Optional.ofNullable(ctx.getResourcePaths(urlPath.toString()));
+            if (rs.isEmpty()) {
+                rs = Optional.of(Set.of());
             }
+
+            dir = Optional.of(buildDir(rs.get(), urlPath, ctx));
         }
 
         return dir;
@@ -81,13 +53,13 @@ public final class ServletUtilities {
 
 
     @NonNull
-    private static List<DirectoryEntry> buildDir(@NonNull final Collection<String> paths, @NonNull final UrlPath urlPath) {
+    private static List<DirectoryEntry> buildDir(@NonNull final Collection<String> paths, @NonNull final UrlPath urlPath, @NonNull final ServletContext ctx) {
         val entries =
             paths
             .stream()
             .map(UrlPath::new)
             .filter(p -> !p.invalid())
-            .map(e -> format(e, urlPath))
+            .map(e -> format(e, urlPath, ctx))
             .map(DirectoryEntry::create)
             .sorted();
 
@@ -95,14 +67,15 @@ public final class ServletUtilities {
     }
 
     @NonNull
-    private static String format(@NonNull final UrlPath entry, @NonNull final UrlPath urlPath) {
-        val pathRel = Path.of(urlPath.toString()).relativize(Path.of(entry.toString()));
+    private static String format(@NonNull final UrlPath entry, @NonNull final UrlPath urlPath, @NonNull final ServletContext ctx) {
+        val prefix = urlPath.toString();
+        val absolute = entry.toString();
 
-        var ret = pathRel.toString();
-
-        if (entry.slashTrailing()) {
-            ret += FileUtilities.SLASH;
+        String ret= absolute;
+        if (absolute.startsWith(prefix)) {
+            ret = absolute.substring(prefix.length());
         }
+        ctx.log("listDirectory format: "+prefix+" + "+absolute+" --->> "+ret);
 
         return ret;
     }

@@ -30,6 +30,8 @@ dependencies {
         exclude group: 'xml-apis'
     }
     runtimeOnly group: 'net.sf.saxon', name: 'Saxon-HE', version: 'latest.release'
+
+    runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.release'
 }
 
 

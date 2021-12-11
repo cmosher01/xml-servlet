@@ -5,9 +5,10 @@ import jakarta.servlet.http.*;
 import lombok.val;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 
-public class PlayFilter extends HttpFilter {
+public class LogInfoFilter extends HttpFilter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         val ctx = req.getServletContext();
@@ -57,7 +58,7 @@ public class PlayFilter extends HttpFilter {
         ctx.log("=".repeat(64));
     }
 
-    private static void logRequestInfo(final HttpServletRequest request) {
+    private static void logRequestInfo(final HttpServletRequest request) throws MalformedURLException {
         val ctx = request.getServletContext();
 
         val e = request.getHeaderNames();
@@ -83,7 +84,23 @@ public class PlayFilter extends HttpFilter {
 
         ctx.log("contextPath: " + request.getContextPath());
         ctx.log("servletPath: " + request.getServletPath());
-        ctx.log("pathInfo: " + request.getPathInfo());
+        val path = request.getPathInfo();
+        ctx.log("pathInfo: " + path);
+        if (Objects.nonNull(path)) {
+            val optRes = Optional.ofNullable(ctx.getResource(path));
+            if (optRes.isPresent()) {
+                ctx.log("resource URL is non-null: " + optRes.get().toExternalForm());
+            } else {
+                ctx.log("resource URL is null.");
+            }
+
+            val optPaths = Optional.ofNullable(ctx.getResourcePaths(path));
+            if (optPaths.isPresent()) {
+                ctx.log("set of resource paths is non-null, with size: " + optPaths.get().size());
+            } else {
+                ctx.log("set of resource paths is null.");
+            }
+        }
 
         ctx.log("queryString: " + request.getQueryString());
 

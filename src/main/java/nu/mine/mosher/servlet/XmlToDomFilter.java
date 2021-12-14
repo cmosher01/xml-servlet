@@ -3,6 +3,7 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.mime.MediaType;
 
@@ -10,6 +11,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import java.util.*;
 
+@Slf4j
 public class XmlToDomFilter extends HttpFilter {
     private String attrOut;
 
@@ -24,19 +26,16 @@ public class XmlToDomFilter extends HttpFilter {
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         val ctx = Objects.requireNonNull(request.getServletContext());
-        ctx.log("XmlToDomFilter for "+request.getPathInfo());
 
         val contentType = Optional.ofNullable(response.getContentType()).orElse("text/plain");
-
         val mediaType = MediaType.parse(contentType);
-        ctx.log("XmlToDomFilter media type: "+mediaType);
-        ctx.log("XmlToDomFilter media subtype: "+mediaType.getSubtype());
 
         val urlPath = ServletUtilities.pathInfo(request);
         val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
 
         if (ServletUtilities.isXmlContentType(mediaType) && u.isPresent()) {
             try (val in = TikaInputStream.get(u.get())) {
+                log.info("Parsing XML to DOM: {} --> {}", urlPath, this.attrOut);
                 val result = new DOMResult();
                 XmlUtilities.getTransformerFactory().newTransformer().transform(new StreamSource(in), result);
                 request.setAttribute(this.attrOut, result.getNode());

@@ -3,6 +3,7 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.io.TikaInputStream;
 
 import java.io.*;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.util.*;
 
 @WebServlet("/d1/d2/*")
+@Slf4j
 public class PlayServlet extends HttpServlet {
     @Override
     @SneakyThrows

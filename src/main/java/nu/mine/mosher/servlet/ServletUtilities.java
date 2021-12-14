@@ -6,7 +6,6 @@ import lombok.*;
 import org.apache.tika.mime.MediaType;
 
 import java.net.*;
-import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -28,7 +27,7 @@ public final class ServletUtilities {
                 rs = Optional.of(Set.of());
             }
 
-            dir = Optional.of(buildDir(rs.get(), urlPath, ctx));
+            dir = Optional.of(buildDir(rs.get(), urlPath));
         }
 
         return dir;
@@ -53,21 +52,20 @@ public final class ServletUtilities {
 
 
     @NonNull
-    private static List<DirectoryEntry> buildDir(@NonNull final Collection<String> paths, @NonNull final UrlPath urlPath, @NonNull final ServletContext ctx) {
+    private static List<DirectoryEntry> buildDir(@NonNull final Collection<String> paths, @NonNull final UrlPath urlPath) {
         val entries =
-            paths
-            .stream()
-            .map(UrlPath::new)
-            .filter(p -> !p.invalid())
-            .map(e -> format(e, urlPath, ctx))
-            .map(DirectoryEntry::create)
-            .sorted();
+            paths.stream()
+                .map(UrlPath::new)
+                .filter(p -> !p.invalid())
+                .map(e -> format(e, urlPath))
+                .map(DirectoryEntry::create)
+                .sorted();
 
         return Stream.concat(Stream.of(DirectoryEntry.up()), entries).toList();
     }
 
     @NonNull
-    private static String format(@NonNull final UrlPath entry, @NonNull final UrlPath urlPath, @NonNull final ServletContext ctx) {
+    private static String format(@NonNull final UrlPath entry, @NonNull final UrlPath urlPath) {
         val prefix = urlPath.toString();
         val absolute = entry.toString();
 
@@ -75,7 +73,6 @@ public final class ServletUtilities {
         if (absolute.startsWith(prefix)) {
             ret = absolute.substring(prefix.length());
         }
-        ctx.log("listDirectory format: "+prefix+" + "+absolute+" --->> "+ret);
 
         return ret;
     }

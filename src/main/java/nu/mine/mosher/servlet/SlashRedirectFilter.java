@@ -3,9 +3,11 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
+@Slf4j
 public class SlashRedirectFilter extends HttpFilter {
     @Override
     @SneakyThrows
@@ -25,7 +27,8 @@ public class SlashRedirectFilter extends HttpFilter {
             val seg = urlPath.isRoot() ? pre.segmentLeaf() : urlPath.segmentLeaf();
 
             val redir = seg+FileUtilities.SLASH;
-            ctx.log("SlashRedirectFilter redirecting to: "+redir);
+            log.info("301 Moved Permanently / Location: {}", redir);
+
             response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
             response.setHeader("Location", redir);
         } else {

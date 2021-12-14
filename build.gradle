@@ -10,6 +10,7 @@ version = '1.0.0'
 group = 'nu.mine.mosher.servlet'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -33,6 +34,9 @@ dependencies {
     runtimeOnly group: 'net.sf.saxon', name: 'Saxon-HE', version: 'latest.release'
 
     runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.release'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.integration'
+    runtimeOnly group: 'nu.mine.mosher.io', name: 'adapt-slf4j-to-servlet', version: 'latest.release'
 }
 
 

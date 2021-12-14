@@ -2,26 +2,25 @@ package nu.mine.mosher.servlet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Node;
 
 import java.util.*;
 
+@Slf4j
 public class XmlFilterUtilities {
-
     @NonNull
     public static Optional<Node> dom(@NonNull final HttpServletRequest request, @NonNull final String attr) {
-        val ctx = Objects.requireNonNull(request.getServletContext());
-
         val optDom = Optional.ofNullable(request.getAttribute(attr));
         if (optDom.isEmpty()) {
-            ctx.log("Could not find attribute \""+attr+"\".");
+            log.info("Could not find DOM attribute: {}", attr);
             return Optional.empty();
         }
 
-        ctx.log("Found attribute \""+attr+"\" of type: "+optDom.get().getClass().getName());
+        log.info("Found attribute {} of type: {}", attr, optDom.get().getClass());
 
         if (!(optDom.get() instanceof Node node)) {
-            ctx.log("Attribute is not of class "+Node.class.getName()+".");
+            log.error("DOM attribute is of incorrect type; must be of type: {}", Node.class);
             return Optional.empty();
         }
 

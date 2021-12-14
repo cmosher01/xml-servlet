@@ -3,6 +3,7 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.mime.MediaType;
 import org.jsoup.Jsoup;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 public class HtmlToXhtmlFilter extends HttpFilter {
     private String attrOut;
 
@@ -33,7 +35,6 @@ public class HtmlToXhtmlFilter extends HttpFilter {
         val characterEncoding = Optional.ofNullable(response.getCharacterEncoding()).orElse("");
 
         val mediaType = MediaType.parse(contentType);
-        ctx.log("HtmlToXhtmlFilter media type: "+mediaType);
 
         val urlPath = ServletUtilities.pathInfo(request);
         val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
@@ -41,6 +42,7 @@ public class HtmlToXhtmlFilter extends HttpFilter {
         if (mediaType.getSubtype().equals("html") && u.isPresent()) {
             val urlResource = u.get();
             try (val in = TikaInputStream.get(urlResource)) {
+                log.info("Converting HTML into DOM: {} --> {}", urlPath, this.attrOut);
                 request.setAttribute(this.attrOut, jsoup(characterEncoding, urlResource, in));
                 response.setContentType("application/xhtml+xml");
             }

@@ -2,141 +2,155 @@ package nu.mine.mosher.servlet;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import lombok.val;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
 
+import static org.slf4j.Logger.ROOT_LOGGER_NAME;
+
+@Slf4j
 public class LogInfoFilter extends HttpFilter {
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        val ctx = req.getServletContext();
-        ctx.log("=".repeat(64));
+    @SneakyThrows
+    public void doFilter(@NonNull final ServletRequest request, @NonNull final ServletResponse response, @NonNull final FilterChain chain) {
+        val ctx = request.getServletContext();
 
-
-
-        val srv = ctx.getServerInfo();
-        ctx.log("Server info: "+srv);
-
-        val path = ctx.getContextPath();
-        ctx.log("context path: "+path);
-
-        val mimeHtml = ctx.getMimeType("index.html");
-        ctx.log("Mime type of html: "+mimeHtml);
-
-        val reses = ctx.getResourcePaths("/");
-        reses.forEach(r -> ctx.log("Top level resource: "+r));
-
-        val urlRoot = ctx.getResource("/");
-        ctx.log("URL of root: "+urlRoot.toExternalForm());
-
-        val pathRoot = ctx.getRealPath("/");
-        ctx.log("real path of root: "+pathRoot);
-
-        val encReq = ctx.getRequestCharacterEncoding();
-        ctx.log("request encoding: "+encReq);
-        val encRes = ctx.getResponseCharacterEncoding();
-        ctx.log("response encoding: "+encRes);
+        log.info("servletContextName: {}", s(ctx.getServletContextName()));
+        log.info("effectiveVersion: {}.{}", s(ctx.getEffectiveMajorVersion()), s(ctx.getEffectiveMinorVersion()));
+        log.info("version: {}.{}", s(ctx.getMajorVersion()), s(ctx.getMinorVersion()));
+        log.info("requestCharacterEncoding: {}", s(ctx.getRequestCharacterEncoding()));
+        log.info("responseCharacterEncoding: {}", s(ctx.getResponseCharacterEncoding()));
+        log.info("serverInfo: {}", s(ctx.getServerInfo()));
+        log.info("contextPath: {}", s(ctx.getContextPath()));
+        log.info("resource(\"/\"): {}", s(ctx.getResource("/").toExternalForm()));
+        log.info("realPath(\"/\"): {}", s(ctx.getRealPath("/")));
 
         Collections.list(ctx.getAttributeNames()).forEach(
-            a -> ctx.log("attr: "+a+" = "+ctx.getAttribute(a)));
+            a -> log.info("attribute: {} = {}", s(a), s(ctx.getAttribute(a))));
         Collections.list(ctx.getInitParameterNames()).forEach(
-            a -> ctx.log("init: "+a+" = "+ctx.getInitParameter(a)));
+            a -> log.info("initParameter: {} = {}", s(a), s(ctx.getInitParameter(a))));
 
-
-
-        if (req instanceof HttpServletRequest hreq) {
-            ctx.log("-".repeat(32));
+        if (request instanceof HttpServletRequest hreq) {
+            log.info("-".repeat(32));
             logRequestInfo(hreq);
         }
 
-
-
-        ctx.log("-".repeat(32));
-        super.doFilter(req, res, chain);
-        ctx.log("=".repeat(64));
+        super.doFilter(request, response, chain);
     }
 
-    private static void logRequestInfo(final HttpServletRequest request) throws MalformedURLException {
+    private static void logRequestInfo(@NonNull final HttpServletRequest request) throws MalformedURLException {
         val ctx = request.getServletContext();
 
         val e = request.getHeaderNames();
-        while (e.hasMoreElements()) {
-            val header = e.nextElement();
-            ctx.log("header: " + header +" = "+ request.getHeader(header));
+        if (Objects.isNull(e)) {
+            log.info("headerNames is <<NULL>>");
+        } else {
+            Collections.list(e).forEach(
+                header -> log.info("header: {} = {}", s(header), s(request.getHeader(header))));
         }
 
         val cookies = request.getCookies();
         if (Objects.isNull(cookies) || cookies.length <= 0) {
-            ctx.log("The request had no cookies attached.");
+            log.info("cookies: <<NONE>>");
         } else {
             Arrays.stream(cookies).forEach(
-                c -> ctx.log("cookie: " + Optional.ofNullable(c.getPath()).orElse("[no-path]")+ " / " + c.getName() + " = " + c.getValue()));
+                c -> log.info("cookie: {} / {} = {}", s(c.getPath()), s(c.getName()), s(c.getValue())));
         }
 
-        ctx.log("requestURL: " + request.getRequestURL());
+        log.info("requestURL: {}", s(request.getRequestURL()));
 
-        ctx.log("scheme: " + request.getScheme());
-        ctx.log("serverName: " + request.getServerName());
-        ctx.log("serverPort: " + request.getServerPort());
-        ctx.log("requestURI: " + request.getRequestURI());
+        log.info("scheme: {}", s(request.getScheme()));
+        log.info("serverName: {}", s(request.getServerName()));
+        log.info("serverPort: {}", s(request.getServerPort()));
+        log.info("requestURI: {}", s(request.getRequestURI()));
 
-        ctx.log("contextPath: " + request.getContextPath());
-        ctx.log("servletPath: " + request.getServletPath());
+        log.info("contextPath: {}", s(request.getContextPath()));
+        log.info("servletPath: {}", s(request.getServletPath()));
+
         val path = request.getPathInfo();
-        ctx.log("pathInfo: " + path);
+        log.info("pathInfo: {}", s(path));
         if (Objects.nonNull(path)) {
-            val optRes = Optional.ofNullable(ctx.getResource(path));
-            if (optRes.isPresent()) {
-                ctx.log("resource URL is non-null: " + optRes.get().toExternalForm());
-            } else {
-                ctx.log("resource URL is null.");
-            }
-
+            log.info("resource: {}", s(ctx.getResource(path)));
             val optPaths = Optional.ofNullable(ctx.getResourcePaths(path));
             if (optPaths.isPresent()) {
-                ctx.log("set of resource paths is non-null, with size: " + optPaths.get().size());
+                log.info("resourcePaths: (size: {})", optPaths.get().size());
             } else {
-                ctx.log("set of resource paths is null.");
+                log.info("resourcePaths: <<NULL>>");
             }
         }
 
-        ctx.log("queryString: " + request.getQueryString());
+        log.info("queryString: {}", s(request.getQueryString()));
 
-        ctx.log("pathTranslated: " + request.getPathTranslated());
+        log.info("pathTranslated: {}", s(request.getPathTranslated()));
 
-        ctx.log("remoteHost: " + request.getRemoteHost());
-        ctx.log("remoteAddr: " + request.getRemoteAddr());
-        ctx.log("remotePort: " + request.getRemotePort());
-        ctx.log("remoteUser: " + request.getRemoteUser());
-        ctx.log("localName: " + request.getLocalName());
-        ctx.log("localAddr: " + request.getLocalAddr());
-        ctx.log("localPort: " + request.getLocalPort());
+        log.info("remoteHost: {}", s(request.getRemoteHost()));
+        log.info("remoteAddr: {}", s(request.getRemoteAddr()));
+        log.info("remotePort: {}", s(request.getRemotePort()));
+        log.info("remoteUser: {}", s(request.getRemoteUser()));
+        log.info("localName: {}", s(request.getLocalName()));
+        log.info("localAddr: {}", s(request.getLocalAddr()));
+        log.info("localPort: {}", s(request.getLocalPort()));
 
-        ctx.log("contentType: " + request.getContentType());
-        ctx.log("encoding: " + request.getCharacterEncoding());
+        log.info("contentType: {}", s(request.getContentType()));
+        log.info("encoding: {}", s(request.getCharacterEncoding()));
 
-        val parameters = request.getParameterMap();
-        if (Objects.isNull(parameters) || parameters.isEmpty()) {
-            ctx.log("The request had no query parameters.");
+        val parameterMap = request.getParameterMap();
+        if (Objects.isNull(parameterMap)) {
+            log.info("query parameterMap: <<NULL>>");
+        } else if (parameterMap.isEmpty()) {
+            log.info("query parameterMap: <<NONE>>");
         } else {
-            parameters.entrySet().forEach(p -> logQueryParams(ctx, p));
+            parameterMap.entrySet().forEach(LogInfoFilter::logQueryParams);
         }
 
-        Collections.list(request.getAttributeNames()).forEach(
-            a -> ctx.log("attr: "+a+" = "+request.getAttribute(a)));
+        val attributeNames = request.getAttributeNames();
+        if (Objects.isNull(attributeNames)) {
+            log.info("attributeNames: <<NULL>>");
+        } else {
+            val r = Collections.list(attributeNames);
+            if (r.isEmpty()) {
+                log.info("attributeNames: <<NONE>>");
+            } else {
+                r.forEach(a -> log.info("attribute: {} = {}", s(a), s(request.getAttribute(a))));
+            }
+        }
     }
 
-    private static void logQueryParams(ServletContext ctx, final Map.Entry<String, String[]> entry) {
+    private static void logQueryParams(final Map.Entry<String, String[]> entry) {
+        if (Objects.isNull(entry)) {
+            log.info("query parameter: <<NULL>>");
+            return;
+        }
+
         val name = entry.getKey();
         val values = entry.getValue();
         if (Objects.isNull(values)) {
-            ctx.log("query parameter: " + name + " = <<NULL>>");
+            log.info("query parameter: {} = {}", s(name), "<<NULL>>");
         } else if (values.length <= 0) {
-            ctx.log("query parameter:" + name + " = <<EMPTY>>");
+            log.info("query parameter: {} = {}", s(name), "<<NONE>>");
         } else {
-            Arrays.stream(values).forEach(value -> ctx.log("query parameter: " + name + " = " + value));
+            Arrays.stream(values).forEach(value -> log.info("query parameter: {} = {}", s(name), s(value)));
         }
+    }
+
+    @NonNull
+    private static String s(final Object anyObjectOrNull) {
+        if (Objects.isNull(anyObjectOrNull)) {
+            return "<<NULL>>";
+        }
+
+        var s = anyObjectOrNull.toString();
+
+        if (s.isEmpty()) {
+            return "<<EMPTY>>";
+        }
+        if (s.isBlank()) {
+            return String.format("<<WS:%d>>", s.length());
+        }
+
+        return s;
     }
 }

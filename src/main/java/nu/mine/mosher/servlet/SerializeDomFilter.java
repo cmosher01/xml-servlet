@@ -3,6 +3,7 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
@@ -23,6 +24,7 @@ import java.util.*;
  *  Otherwise (if the attribute does not exist, or is of the wrong datatype),
  * then the response's output stream is unaffected.
  */
+@Slf4j
 public class SerializeDomFilter extends HttpFilter {
     private static final Charset CHARSET_RESPONSE = StandardCharsets.UTF_8;
     private String attrIn;
@@ -39,14 +41,10 @@ public class SerializeDomFilter extends HttpFilter {
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         super.doFilter(request, response, chain);
 
-        val ctx = Objects.requireNonNull(request.getServletContext());
-
         val optNode = XmlFilterUtilities.dom(request, this.attrIn);
-
         if (optNode.isPresent()) {
-            ctx.log("XML serialization beginning...");
+            log.info("Serializing DOM to XML: {} --> response", this.attrIn);
             sendXml(optNode.get(), response);
-            ctx.log("XML serialization complete.");
         }
     }
 

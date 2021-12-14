@@ -3,6 +3,7 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.*;
@@ -10,6 +11,7 @@ import org.apache.tika.metadata.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+@Slf4j
 public class ContentTypeFilter extends HttpFilter {
     public static final Charset DEFAULT_UNKNOWN_CHARSET = Charset.forName("windows-1252");
 
@@ -27,11 +29,11 @@ public class ContentTypeFilter extends HttpFilter {
 
             try (val in = TikaInputStream.get(urlResource, metatika)) {
                 val contentType = TikaConfig.getDefaultConfig().getDetector().detect(in, metatika);
-                ctx.log("Detected content type: " + contentType);
+                log.info("Detected content type: {}", contentType);
                 response.setContentType(contentType.toString());
 
                 val characterEncoding = Optional.ofNullable(TikaConfig.getDefaultConfig().getEncodingDetector().detect(in, metatika)).orElse(DEFAULT_UNKNOWN_CHARSET);
-                ctx.log("Detected character encoding: " + characterEncoding);
+                log.info("Detected character encoding: {}", characterEncoding);
                 response.setCharacterEncoding(characterEncoding.name());
             }
         }

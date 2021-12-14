@@ -3,12 +3,14 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamSource;
 import java.net.URL;
 import java.util.*;
 
+@Slf4j
 public class XsltFilter extends HttpFilter {
     private URL urlXslt;
     private String attrIn;
@@ -25,7 +27,10 @@ public class XsltFilter extends HttpFilter {
         // xsltPath should be something like "/WEB-INF/xslt/a.xslt"
         val path = ServletUtilities.requireParam(config, "xsltPath");
         this.urlXslt = ctx.getResource(path);
-        ctx.log("Found XSLT at: "+this.urlXslt);
+        if (Objects.isNull(this.urlXslt)) {
+            throw new ServletException("Cannot find XSLT file: "+path);
+        }
+        log.info("XSLT path: {}", this.urlXslt);
 
         this.attrIn = ServletUtilities.requireParam(config, "attrIn");
         this.attrOut = ServletUtilities.requireParam(config, "attrOut");
@@ -36,11 +41,9 @@ public class XsltFilter extends HttpFilter {
     protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
         super.doFilter(request, response, chain);
 
-        val ctx = Objects.requireNonNull(request.getServletContext());
-
         val optNode = XmlFilterUtilities.dom(request, this.attrIn);
         if (optNode.isPresent()) {
-            ctx.log("Will process XSLT: "+this.urlXslt);
+            log.info("Processing XSLT transform: {} --> {} --> {}", this.attrIn, this.urlXslt, this.attrOut);
             val transformer = XmlUtilities.getTransformerFactory().newTransformer(new StreamSource(this.urlXslt.toExternalForm()));
             val result = new DOMResult();
             request.getAttributeNames().asIterator().forEachRemaining(n -> transformer.setParameter(n, request.getAttribute(n).toString()));
@@ -54,6 +57,7 @@ public class XsltFilter extends HttpFilter {
         this.attrOut = null;
         this.attrIn = null;
         this.urlXslt = null;
+
         super.destroy();
     }
 }

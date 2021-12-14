@@ -3,10 +3,11 @@ package nu.mine.mosher.servlet;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-
+@Slf4j
 public class DirectoryFilter extends HttpFilter {
     private String attrOut;
 
@@ -32,6 +33,7 @@ public class DirectoryFilter extends HttpFilter {
         val dir = ServletUtilities.listDirectory(ctx, urlPath);
 
         if (dir.isPresent()) {
+            log.info("Building into DOM: directory --> {}", this.attrOut);
             request.setAttribute(this.attrOut, XmlUtilities.convertToXml(dir.get()));
         } else {
             super.doFilter(request, response, chain);

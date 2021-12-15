@@ -21,23 +21,30 @@ public class DirectoryFilter extends HttpFilter {
     @Override
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+
         val ctx = Objects.requireNonNull(request.getServletContext());
 
         val urlPath = ServletUtilities.pathInfo(request);
 
         if (urlPath.invalid()) {
+            log.warn("Detected invalid requested path: {}", urlPath);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            log.trace("filter exit");
             return;
         }
 
         val dir = ServletUtilities.listDirectory(ctx, urlPath);
 
         if (dir.isPresent()) {
-            log.info("Building into DOM: directory --> {}", this.attrOut);
+            log.warn("Building directory listing into DOM: resourcePaths(\"{}\") --> {}", urlPath, this.attrOut);
             request.setAttribute(this.attrOut, XmlUtilities.convertToXml(dir.get()));
         } else {
+            log.trace("filter forward");
             super.doFilter(request, response, chain);
+            log.trace("filter return");
         }
+        log.trace("filter exit");
     }
 
     @Override

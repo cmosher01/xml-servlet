@@ -21,7 +21,6 @@ dependencies {
     implementation group: 'org.apache.tika', name: 'tika-parsers-standard-package', version: 'latest.release', {
         exclude group: 'xml-apis'
     }
-    implementation group: 'org.apache.tika', name: 'tika-parser-nlp-module', version: 'latest.release'
 
     implementation group: 'org.jsoup', name: 'jsoup', version: 'latest.release'
 

@@ -18,6 +18,8 @@ public class ContentTypeFilter extends HttpFilter {
     @Override
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+
         val ctx = Objects.requireNonNull(request.getServletContext());
 
         val optUrl = Optional.ofNullable(ctx.getResource(ServletUtilities.pathInfo(request).toString()));
@@ -38,6 +40,9 @@ public class ContentTypeFilter extends HttpFilter {
             }
         }
 
+        log.trace("filter forward");
         super.doFilter(request, response, chain);
+        log.trace("filter return");
+        log.trace("filter exit");
     }
 }

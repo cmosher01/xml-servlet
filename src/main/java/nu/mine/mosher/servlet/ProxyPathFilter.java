@@ -15,12 +15,17 @@ public class ProxyPathFilter extends HttpFilter {
     @Override
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+
         val prefix = buildPrefixPath(request);
 
         log.info("Setting attribute nu.mine.mosher.xml.pathPrefix: {}", prefix);
         request.setAttribute("nu.mine.mosher.xml.pathPrefix", prefix);
 
+        log.trace("filter forward");
         super.doFilter(request, response, chain);
+        log.trace("filter return");
+        log.trace("filter exit");
     }
 
 

@@ -39,7 +39,10 @@ public class XsltFilter extends HttpFilter {
     @Override
     @SneakyThrows
     protected void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+        log.trace("filter forward");
         super.doFilter(request, response, chain);
+        log.trace("filter return");
 
         val optNode = XmlFilterUtilities.dom(request, this.attrIn);
         if (optNode.isPresent()) {
@@ -50,6 +53,8 @@ public class XsltFilter extends HttpFilter {
             transformer.transform(new DOMSource(optNode.get()), result);
             request.setAttribute(this.attrOut, result.getNode());
         }
+
+        log.trace("filter exit");
     }
 
     @Override

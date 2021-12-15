@@ -29,6 +29,8 @@ public class HtmlToXhtmlFilter extends HttpFilter {
     @Override
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+
         val ctx = Objects.requireNonNull(request.getServletContext());
 
         val contentType = Optional.ofNullable(response.getContentType()).orElse("text/plain");
@@ -47,8 +49,11 @@ public class HtmlToXhtmlFilter extends HttpFilter {
                 response.setContentType("application/xhtml+xml");
             }
         } else {
+            log.trace("filter forward");
             super.doFilter(request, response, chain);
+            log.trace("filter return");
         }
+        log.trace("filter exit");
     }
 
     private static org.w3c.dom.Document jsoup(@NonNull final String characterEncoding, @NonNull final URL urlResource, @NonNull final TikaInputStream in) throws IOException {

@@ -1,0 +1,17 @@
+@import url("https://mosher.mine.nu/uniwebfonts/css/reset.css");
+@import url("https://mosher.mine.nu/uniwebfonts/css/solarized.css");
+@import url("https://mosher.mine.nu/uniwebfonts/css/fonts.css");
+
+body {
+    margin: 6ex 4em 12ex 4em;
+}
+
+a:hover {
+    background-color: var(--sol-base2);
+    color: var(--sol-orange);
+}
+
+:target {
+    background-color: var(--sol-base2);
+    color: var(--sol-base03);
+}

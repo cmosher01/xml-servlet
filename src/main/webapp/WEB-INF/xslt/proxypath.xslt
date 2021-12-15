@@ -5,6 +5,9 @@
     xmlns:fn="http://www.w3.org/2005/xpath-functions"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
 >
+    <!--
+    Prepends absolute a/href and link/href attributes with the proxy path prefix.
+    -->
     <xsl:output method="xml" version="1.1" encoding="UTF-8"/>
 
     <xsl:param name="nu.mine.mosher.xml.pathPrefix"/>

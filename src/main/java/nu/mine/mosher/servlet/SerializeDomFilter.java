@@ -39,13 +39,17 @@ public class SerializeDomFilter extends HttpFilter {
     @Override
     @SneakyThrows
     public void doFilter(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain chain) {
+        log.trace("filter entry");
+        log.trace("filter forward");
         super.doFilter(request, response, chain);
+        log.trace("filter return");
 
         val optNode = XmlFilterUtilities.dom(request, this.attrIn);
         if (optNode.isPresent()) {
             log.info("Serializing DOM to XML: {} --> response", this.attrIn);
             sendXml(optNode.get(), response);
         }
+        log.trace("filter exit");
     }
 
     @Override

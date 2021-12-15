@@ -94,6 +94,44 @@
     </filter-mapping>
 
     <filter>
+        <filter-name>SetPageStyle</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>page</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/pagestyle.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>page</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>SetPageStyle</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>PageStyleFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.PageStyleFilter</filter-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>/style.css</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pageclass</param-name>
+            <param-value>fontFeatures unicodeWebFonts solarizedLight</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>PageStyleFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>FormatDirectory</filter-name>
         <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
         <init-param>
@@ -146,6 +184,170 @@
     </filter>
     <filter-mapping>
         <filter-name>HtmlToXhtmlFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-xhtml-page</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-xhtml-page.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>page</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-xhtml-page</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-xhtml-general</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-xhtml-general.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-xhtml-general</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-xhtml-specific</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-xhtml-specific.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-xhtml-specific</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-teiattr</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-teiattr.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-teiattr</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-norm-text</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-norm-text.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-norm-text</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-facs</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-facs.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-facs</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TEI-copyOf</filter-name>
+        <filter-class>nu.mine.mosher.servlet.XsltFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xsltPath</param-name>
+            <param-value>/WEB-INF/xslt/tei-copyOf.xslt</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TEI-copyOf</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TeiDetectorFilter</filter-name>
+        <filter-class>nu.mine.mosher.servlet.TeiDetectorFilter</filter-class>
+        <init-param>
+            <param-name>attrIn</param-name>
+            <param-value>page</param-value>
+        </init-param>
+        <init-param>
+            <param-name>attrOut</param-name>
+            <param-value>tei</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>TeiDetectorFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

@@ -25,13 +25,19 @@ services:
   tomcat:
     image: 'tomcat:jdk17-corretto'
     command:
-      - 'catalina.sh'
-      - 'run'
-      - 'security'
+      - '/root/init.sh'
     volumes:
       - type: bind
+        source: './src/test/webapp'
+        target: '/srv'
+        read_only: true
+      - type: bind
+        source: './src/main/tomcat/init.sh'
+        target: '/root/init.sh'
+        read_only: true
+      - type: bind
         source: './build/libs/xml-servlet-1.0.0.war'
-        target: '/usr/local/tomcat/webapps/ROOT.war'
+        target: '/root/ROOT.war'
         read_only: true
       - type: bind
         source: './src/main/tomcat/conf'

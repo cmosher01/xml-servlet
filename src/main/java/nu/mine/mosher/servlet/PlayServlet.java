@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-@WebServlet("/d1/d2/*")
+@WebServlet("/*")
 @Slf4j
 public class PlayServlet extends HttpServlet {
     @Override

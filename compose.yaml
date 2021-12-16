@@ -30,8 +30,12 @@ services:
       - 'security'
     volumes:
       - type: bind
+        source: './src/main/java'
+        target: '/usr/local/tomcat/webapps/ROOT/java'
+        read_only: true
+      - type: bind
         source: './build/libs/xml-servlet-1.0.0.war'
-        target: '/usr/local/tomcat/webapps/foo.war'
+        target: '/usr/local/tomcat/webapps/ROOT.war'
         read_only: true
       - type: bind
         source: './src/main/tomcat/conf'
@@ -47,7 +51,7 @@ services:
         source: tomcat_temp
         target: '/usr/local/tomcat/temp'
     healthcheck:
-      test: 'curl -f http://localhost:8080/foo/d1/d2/health'
+      test: 'curl -f http://localhost:8080/health'
       interval: 10s
       timeout: 2s
       retries: 1

@@ -26,18 +26,19 @@ services:
     image: 'tomcat:jdk17-corretto'
     command:
       - '/root/init.sh'
+      - '/srv/genealogical-document-transcriptions/genealogy/ genealogy'
     volumes:
-      - type: bind
-        source: './src/test/webapp'
+      - type: volume
+        source: 'archive'
         target: '/srv'
+        read_only: true
+      - type: volume
+        source: 'war'
+        target: '/root/war'
         read_only: true
       - type: bind
         source: './src/main/tomcat/init.sh'
         target: '/root/init.sh'
-        read_only: true
-      - type: bind
-        source: './build/libs/xml-servlet-1.0.0.war'
-        target: '/root/ROOT.war'
         read_only: true
       - type: bind
         source: './src/main/tomcat/conf'
@@ -59,7 +60,43 @@ services:
       retries: 1
       start_period: 3s
 
+  war:
+    image: alpine
+    volumes:
+      - type: volume
+        source: 'war'
+        target: '/root/war'
+        read_only: false
+    entrypoint:
+      - '/bin/sh'
+      - '-c'
+    command:
+      - >
+        apk add maven &&
+        mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get \
+            -Dartifact=nu.mine.mosher.servlet:xml-servlet:LATEST:war &&
+        cp -v ~/.m2/repository/nu/mine/mosher/servlet/xml-servlet/*/* /root/war/ &&
+        touch /root/war/ready
+
+  archive:
+    image: alpine
+    volumes:
+      - type: volume
+        source: 'archive'
+        target: '/srv'
+        read_only: false
+    entrypoint:
+      - '/bin/sh'
+      - '-c'
+    command:
+      - >
+        apk add git &&
+        cd /srv &&
+        git clone --depth=1 https://github.com/cmosher01/genealogical-document-transcriptions.git
+
 volumes:
+  war:
+  archive:
   tomcat_logs:
   tomcat_work:
   tomcat_temp:

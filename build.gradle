@@ -1,5 +1,5 @@
 plugins {
-    id "io.freefair.lombok" version "6.3.0"
+    id "io.freefair.lombok" version "6.4.0"
     id 'war'
     id 'signing'
     id 'maven-publish'
@@ -17,8 +17,8 @@ repositories {
         name = 'tei-to-xhtml5'
         url = uri('https://maven.pkg.github.com/cmosher01/Tei-To-Xhtml5')
         credentials {
-            username = project.getProperty('gpr.user') ?: System.getenv('GPR_USER')
-            password = project.getProperty('gpr.key') ?: System.getenv('GPR_KEY')
+            username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
+            password = project.findProperty('gpr.key') ?: System.getenv('GPR_KEY')
         }
     }
 }

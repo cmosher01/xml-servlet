@@ -4,6 +4,7 @@
 
 body {
     margin: 6ex 4em 12ex 4em;
+    user-select: none;
 }
 
 a:hover {

@@ -67,15 +67,23 @@ services:
         source: 'war'
         target: '/root/war'
         read_only: false
+      - type: bind
+        source: './build/libs'
+        target: '/root/libs'
+        read_only: false
     entrypoint:
       - '/bin/sh'
       - '-c'
+    # command:
+    #   - >
+    #     apk add maven &&
+    #     mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get \
+    #         -Dartifact=nu.mine.mosher.servlet:xml-servlet:LATEST:war &&
+    #     cp -v ~/.m2/repository/nu/mine/mosher/servlet/xml-servlet/*/* /root/war/ &&
+    #     touch /root/war/ready
     command:
       - >
-        apk add maven &&
-        mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get \
-            -Dartifact=nu.mine.mosher.servlet:xml-servlet:LATEST:war &&
-        cp -v ~/.m2/repository/nu/mine/mosher/servlet/xml-servlet/*/* /root/war/ &&
+        cp -v /root/libs/*.war /root/war/ &&
         touch /root/war/ready
 
   archive:

@@ -25,4 +25,10 @@
             <xsl:value-of select="fn:concat($nu.mine.mosher.xml.pathPrefix,.)"/>
         </xsl:attribute>
     </xsl:template>
+
+    <xsl:template match="xhtml:script/@src[fn:starts-with(.,'/') and not(fn:starts-with(.,'//'))]">
+        <xsl:attribute name='src'>
+            <xsl:value-of select="fn:concat($nu.mine.mosher.xml.pathPrefix,.)"/>
+        </xsl:attribute>
+    </xsl:template>
 </xsl:stylesheet>

@@ -6,6 +6,11 @@ then
   exit 1
 fi
 
+until [ -f /root/war/ready ]
+do
+     sleep 2
+done
+
 cd /usr/local/tomcat/webapps
 if [ -e ROOT ] ; then
   echo "ROOT webapp already exists, will not overwrite"

@@ -7,12 +7,20 @@ plugins {
 
 
 
-version = '1.0.0'
+version = '1.0.1'
 
 group = 'nu.mine.mosher.servlet'
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'tei-to-xhtml5'
+        url = uri('https://maven.pkg.github.com/cmosher01/Tei-To-Xhtml5')
+        credentials {
+            username = project.getProperty('gpr.user') ?: System.getenv('GPR_USER')
+            password = project.getProperty('gpr.key') ?: System.getenv('GPR_KEY')
+        }
+    }
 }
 
 dependencies {
@@ -33,7 +41,7 @@ dependencies {
     }
     runtimeOnly group: 'net.sf.saxon', name: 'Saxon-HE', version: 'latest.release'
 
-    runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.release'
+    runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.integration'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.integration'
     runtimeOnly group: 'nu.mine.mosher.io', name: 'adapt-slf4j-to-servlet', version: 'latest.release'

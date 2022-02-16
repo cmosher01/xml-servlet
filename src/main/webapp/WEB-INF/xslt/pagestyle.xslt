@@ -11,6 +11,7 @@
 
     <xsl:param name="nu.mine.mosher.xml.pageclass"/>
     <xsl:param name="nu.mine.mosher.xml.stylesheet"/>
+    <xsl:param name="nu.mine.mosher.xml.script"/>
 
     <xsl:mode on-no-match="shallow-copy"/>
 
@@ -34,6 +35,11 @@
                 </xsl:attribute>
                 <xsl:attribute name="href">
                     <xsl:value-of select="$nu.mine.mosher.xml.stylesheet"/>
+                </xsl:attribute>
+            </xsl:element>
+            <xsl:element name="script" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="src">
+                    <xsl:value-of select="$nu.mine.mosher.xml.script"/>
                 </xsl:attribute>
             </xsl:element>
         </xsl:copy>

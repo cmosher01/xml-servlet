@@ -122,6 +122,10 @@
             <param-value>/assets/styles/style.css</param-value>
         </init-param>
         <init-param>
+            <param-name>script</param-name>
+            <param-value>/assets/scripts/main.js</param-value>
+        </init-param>
+        <init-param>
             <param-name>pageclass</param-name>
             <param-value>fontFeatures unicodeWebFonts solarizedLight</param-value>
         </init-param>

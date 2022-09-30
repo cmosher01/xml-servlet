@@ -14,12 +14,7 @@ group = 'nu.mine.mosher.servlet'
 repositories {
     mavenCentral()
     maven {
-        name = 'tei-to-xhtml5'
-        url = uri('https://maven.pkg.github.com/cmosher01/Tei-To-Xhtml5')
-        credentials {
-            username = project.findProperty('gpr.user') ?: System.getenv('GPR_USER')
-            password = project.findProperty('gpr.key') ?: System.getenv('GPR_KEY')
-        }
+        url = uri('https://public:\u0067hp_fya6Kseu3XOBMg2icbg7f1LP6ZFYjj35v4Zj@maven.pkg.github.com/cmosher01/*')
     }
 }
 

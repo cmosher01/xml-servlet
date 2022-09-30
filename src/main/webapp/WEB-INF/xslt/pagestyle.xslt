@@ -41,6 +41,9 @@
                 <xsl:attribute name="src">
                     <xsl:value-of select="$nu.mine.mosher.xml.script"/>
                 </xsl:attribute>
+                <xsl:attribute name="async">
+                    <xsl:value-of select="'async'"/>
+                </xsl:attribute>
             </xsl:element>
         </xsl:copy>
     </xsl:template>

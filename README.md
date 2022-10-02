@@ -1,10 +1,8 @@
 # xml-servlet
 
-Copyright © 2021, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com
+Copyright © 2021–2022, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com
 
 [![License](https://img.shields.io/github/license/cmosher01/xml-servlet.svg)](https://www.gnu.org/licenses/gpl.html)
-[![Latest Release](https://img.shields.io/github/release-pre/cmosher01/xml-servlet.svg)](https://github.com/cmosher01/xml-servlet/releases/latest)
-[![Build Status](https://travis-ci.com/cmosher01/xml-servlet.svg?branch=main)](https://travis-ci.com/cmosher01/xml-servlet)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 
 ## Development
@@ -22,23 +20,7 @@ OpenJDK 64-Bit Server VM Corretto-17.0.1.12.1 (build 17.0.1+12-LTS, mixed mode, 
 
 #### build
 ```sh
-$ ./gradlew build
-> Task :generateMainEffectiveLombokConfig1
-> Task :compileJava
-> Task :processResources NO-SOURCE
-> Task :classes
-> Task :war
-> Task :assemble
-> Task :generateTestEffectiveLombokConfig1
-> Task :compileTestJava NO-SOURCE
-> Task :processTestResources NO-SOURCE
-> Task :testClasses UP-TO-DATE
-> Task :test NO-SOURCE
-> Task :check UP-TO-DATE
-> Task :build
-
-BUILD SUCCESSFUL in 1s
-4 actionable tasks: 4 executed
+$ docker-compose build
 ```
 
 #### run
@@ -61,8 +43,8 @@ xml-servlet-tomcat-1   "catalina.sh run sec…"   tomcat              running (h
 
 #### use
 ```sh
-$ curl localhost
-<!doctype html><html><body><pre><a href="/test/archive/d1/d2/">/test/archive/d1/d2/</a></pre></body></html>
+$ curl localhost:60080
+<!doctype html><html><body><pre><a href="/test/archive/">/test/archive/</a></pre></body></html>
 
-$ lynx localhost
+$ lynx localhost:60080
 ```

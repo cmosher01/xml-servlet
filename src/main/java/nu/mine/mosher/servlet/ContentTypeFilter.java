@@ -22,7 +22,7 @@ public class ContentTypeFilter extends HttpFilter {
 
         val ctx = Objects.requireNonNull(request.getServletContext());
 
-        val optUrl = Optional.ofNullable(ctx.getResource(ServletUtilities.pathInfo(request).toString()));
+        val optUrl = ServletUtilities.getResource(ctx, ServletUtilities.pathInfo(request).toString());
         if (optUrl.isPresent()) {
             val urlResource = optUrl.get();
 

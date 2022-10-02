@@ -39,7 +39,7 @@ public class HtmlToXhtmlFilter extends HttpFilter {
         val mediaType = MediaType.parse(contentType);
 
         val urlPath = ServletUtilities.pathInfo(request);
-        val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
+        val u = ServletUtilities.getResource(ctx, urlPath.toString());
 
         if (mediaType.getSubtype().equals("html") && u.isPresent()) {
             val urlResource = u.get();

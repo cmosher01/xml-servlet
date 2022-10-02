@@ -1,13 +1,11 @@
 plugins {
-    id "io.freefair.lombok" version "6.4.0"
+    id "io.freefair.lombok" version "6.5.1"
     id 'war'
-    id 'signing'
-    id 'maven-publish'
 }
 
 
 
-version = '1.0.2'
+version = '1.1.0'
 
 group = 'nu.mine.mosher.servlet'
 
@@ -19,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    providedCompile group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: 'latest.release'
+    providedCompile group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.+'
 
     implementation group: 'org.apache.tika', name: 'tika-core', version: 'latest.release'
     implementation group: 'org.apache.tika', name: 'tika-parsers-standard-package', version: 'latest.release', {
@@ -34,9 +32,11 @@ dependencies {
     runtimeOnly group: 'xerces', name: 'xercesImpl', version: 'latest.release', {
         exclude group: 'xml-apis'
     }
-    runtimeOnly group: 'net.sf.saxon', name: 'Saxon-HE', version: 'latest.release'
+    runtimeOnly group: 'net.sf.saxon', name: 'Saxon-HE', version: 'latest.release', {
+        exclude group: 'xml-apis'
+    }
 
-    runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.integration'
+    runtimeOnly group: 'nu.mine.mosher.xml', name: 'tei-to-xhtml5', version: 'latest.release'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.integration'
     runtimeOnly group: 'nu.mine.mosher.io', name: 'adapt-slf4j-to-servlet', version: 'latest.release'
@@ -47,61 +47,5 @@ dependencies {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of 17
-    }
-}
-
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.web
-            pom {
-                name = 'xml-servlet'
-                description = 'Servlet for XML-related documents'
-                url = 'https://github.com/cmosher01/xml-servlet'
-                inceptionYear = '2021'
-                packaging = 'war'
-                licenses {
-                    license {
-                        name = 'GNU General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/gpl-3.0.html'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'cmosher01'
-                        name = 'Christopher Alan Mosher'
-                        email = 'cmosher01@gmail.com'
-                        url = 'https://mosher.mine.nu'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/cmosher01/xml-servlet.git'
-                    developerConnection = 'scm:git:ssh://github.com/cmosher01/xml-servlet.git'
-                    url = 'https://github.com/cmosher01/xml-servlet'
-                }
-            }
-        }
-    }
-}
-tasks.assemble.dependsOn tasks.generatePomFileForMavenPublication
-
-signing {
-    sign publishing.publications.maven
-}
-if (hasProperty('signing.secretKeyRingFile')) {
-    tasks.assemble.dependsOn tasks.signMavenPublication
-}
-
-publishing {
-    repositories {
-        maven {
-            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = findProperty('ossrhUsername') ?: 'restricted'
-                password = findProperty('ossrhPassword') ?: 'restricted'
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context crossContext="true">
+<Context crossContext="true" docBase="/srv">
     <Resources allowLinking="true" trackLockedFiles="true"/>
 </Context>

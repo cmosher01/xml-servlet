@@ -21,7 +21,7 @@ public class SlashRedirectFilter extends HttpFilter {
         if (s.isBlank()) {
             s = FileUtilities.SLASH;
         }
-        val optRes = Optional.ofNullable(ctx.getResource(s));
+        val optRes = ServletUtilities.getResource(ctx, s);
 
         if (optRes.isPresent() && optRes.get().toExternalForm().endsWith(FileUtilities.SLASH) && !urlPath.slashTrailing()) {
             val pre = new UrlPath(Optional.ofNullable(request.getAttribute("nu.mine.mosher.xml.pathPrefix")).orElse("").toString());

@@ -33,7 +33,7 @@ public class XmlToDomFilter extends HttpFilter {
         val mediaType = MediaType.parse(contentType);
 
         val urlPath = ServletUtilities.pathInfo(request);
-        val u = Optional.ofNullable(ctx.getResource(urlPath.toString()));
+        val u = ServletUtilities.getResource(ctx, urlPath.toString());
 
         if (ServletUtilities.isXmlContentType(mediaType) && u.isPresent()) {
             try (val in = TikaInputStream.get(u.get())) {

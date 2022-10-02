@@ -1,110 +1,58 @@
-services:
-
-  nginx:
-    image: 'nginx'
-    volumes:
-      - type: bind
-        source: './src/main/nginx/nginx.conf'
-        target: '/etc/nginx/nginx.conf'
-        read_only: true
-    ports:
-      - published: 80
-        target: 80
-    links:
-      - tomcat
-    depends_on:
-      tomcat:
-        condition: service_healthy
-    healthcheck:
-      test: 'curl -f http://localhost/'
-      interval: 9s
-      timeout: 2s
-      retries: 1
-      start_period: 1s
-
-  tomcat:
-    image: 'tomcat:jdk17-corretto'
-    command:
-      - '/root/init.sh'
-      - '/srv/genealogical-document-transcriptions/genealogy/ genealogy'
-    volumes:
-      - type: volume
-        source: 'archive'
-        target: '/srv'
-        read_only: true
-      - type: volume
-        source: 'war'
-        target: '/root/war'
-        read_only: true
-      - type: bind
-        source: './src/main/tomcat/init.sh'
-        target: '/root/init.sh'
-        read_only: true
-      - type: bind
-        source: './src/main/tomcat/conf'
-        target: '/usr/local/tomcat/conf'
-        read_only: true
-      - type: volume
-        source: tomcat_logs
-        target: '/usr/local/tomcat/logs'
-      - type: volume
-        source: tomcat_work
-        target: '/usr/local/tomcat/work'
-      - type: volume
-        source: tomcat_temp
-        target: '/usr/local/tomcat/temp'
-    healthcheck:
-      test: 'curl -f http://localhost:8080/health'
-      interval: 10s
-      timeout: 2s
-      retries: 1
-      start_period: 3s
-
-  war:
-    image: alpine
-    volumes:
-      - type: volume
-        source: 'war'
-        target: '/root/war'
-        read_only: false
-      - type: bind
-        source: './build/libs'
-        target: '/root/libs'
-        read_only: false
-    entrypoint:
-      - '/bin/sh'
-      - '-c'
-    # command:
-    #   - >
-    #     apk add maven &&
-    #     mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:get \
-    #         -Dartifact=nu.mine.mosher.servlet:xml-servlet:LATEST:war &&
-    #     cp -v ~/.m2/repository/nu/mine/mosher/servlet/xml-servlet/*/* /root/war/ &&
-    #     touch /root/war/ready
-    command:
-      - >
-        cp -v /root/libs/*.war /root/war/ &&
-        touch /root/war/ready
-
-  archive:
-    image: alpine
-    volumes:
-      - type: volume
-        source: 'archive'
-        target: '/srv'
-        read_only: false
-    entrypoint:
-      - '/bin/sh'
-      - '-c'
-    command:
-      - >
-        apk add git &&
-        cd /srv &&
-        git clone --depth=1 https://github.com/cmosher01/genealogical-document-transcriptions.git
+---
+version: "3.8"
 
 volumes:
-  war:
-  archive:
-  tomcat_logs:
-  tomcat_work:
-  tomcat_temp:
+  "tomcat_logs":
+  "tomcat_work":
+  "tomcat_temp":
+
+services:
+
+  "nginx":
+    image: "nginx"
+    volumes:
+      - type: "bind"
+        source: "./src/main/nginx/nginx.conf"
+        target: "/etc/nginx/nginx.conf"
+        read_only: true
+    ports:
+      - published: 60080
+        target: 80
+    links:
+      - "tomcat"
+    depends_on:
+      "tomcat":
+        condition: "service_healthy"
+    healthcheck:
+      test: "curl -f http://localhost/"
+      interval: "9s"
+      timeout: "2s"
+      retries: 1
+      start_period: "1s"
+
+  "tomcat":
+    build: "./"
+    volumes:
+      - type: "bind"
+        source: "./src/test"
+        target: "/srv"
+        read_only: true
+      - type: "bind"
+        source: "./src/main/tomcat/conf"
+        target: "/usr/local/tomcat/conf"
+        read_only: true
+      - type: "volume"
+        source: "tomcat_logs"
+        target: "/usr/local/tomcat/logs"
+      - type: "volume"
+        source: "tomcat_work"
+        target: "/usr/local/tomcat/work"
+      - type: "volume"
+        source: "tomcat_temp"
+        target: "/usr/local/tomcat/temp"
+    healthcheck:
+      test: "curl -f http://localhost:8080/health"
+      interval: "10s"
+      timeout: "2s"
+      retries: 1
+      start_period: "3s"

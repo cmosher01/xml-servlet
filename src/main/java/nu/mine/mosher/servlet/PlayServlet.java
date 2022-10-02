@@ -24,7 +24,7 @@ public class PlayServlet extends HttpServlet {
             return; // OK
         }
 
-        val res = Optional.ofNullable(ctx.getResource(urlPath.toString()));
+        val res = ServletUtilities.getResource(ctx, urlPath.toString());
         if (res.isPresent()) {
             send(res.get(), response);
         } else {

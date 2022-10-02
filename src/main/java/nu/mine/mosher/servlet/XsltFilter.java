@@ -26,10 +26,7 @@ public class XsltFilter extends HttpFilter {
         // Inspired by "Java and XSLT" by Eric M. Burke
         // xsltPath should be something like "/WEB-INF/xslt/a.xslt"
         val path = ServletUtilities.requireParam(config, "xsltPath");
-        this.urlXslt = ctx.getResource(path);
-        if (Objects.isNull(this.urlXslt)) {
-            throw new ServletException("Cannot find XSLT file: "+path);
-        }
+        this.urlXslt = ServletUtilities.getResource(ctx, path).orElseThrow(() -> new ServletException("Cannot find XSLT file: "+path));
         log.info("XSLT path: {}", this.urlXslt);
 
         this.attrIn = ServletUtilities.requireParam(config, "attrIn");

@@ -1,8 +1,5 @@
 ---
-version: "3.8"
-
 volumes:
-  "tomcat_logs":
   "tomcat_work":
   "tomcat_temp":
 
@@ -37,9 +34,6 @@ services:
         source: "./src/test"
         target: "/srv"
         read_only: true
-      - type: "volume"
-        source: "tomcat_logs"
-        target: "/usr/local/tomcat/logs"
       - type: "volume"
         source: "tomcat_work"
         target: "/usr/local/tomcat/work"

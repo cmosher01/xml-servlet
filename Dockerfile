@@ -27,5 +27,3 @@ WORKDIR $HOME
 COPY src/main/tomcat/conf /usr/local/tomcat/conf
 
 COPY --from=build /root/build/libs/*.war /usr/local/tomcat/webapps/ROOT.war
-
-VOLUME /root

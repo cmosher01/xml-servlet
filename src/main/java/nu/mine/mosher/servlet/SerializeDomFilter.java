@@ -77,7 +77,7 @@ public class SerializeDomFilter extends HttpFilter {
         tf.setOutputProperty(OutputKeys.METHOD, "xml");
         tf.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
         tf.setOutputProperty(OutputKeys.ENCODING, CHARSET_RESPONSE.name());
-        tf.setOutputProperty(OutputKeys.INDENT, "yes");
+        tf.setOutputProperty(OutputKeys.INDENT, "no");
         tf.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
         tf.transform(new DOMSource(node), new StreamResult(out));

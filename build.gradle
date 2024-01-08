@@ -19,8 +19,8 @@ repositories {
 dependencies {
     providedCompile group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.+'
 
-    implementation group: 'org.apache.tika', name: 'tika-core', version: 'latest.release'
-    implementation group: 'org.apache.tika', name: 'tika-parsers-standard-package', version: 'latest.release', {
+    implementation group: 'org.apache.tika', name: 'tika-core', version: '[2,3)'
+    implementation group: 'org.apache.tika', name: 'tika-parsers-standard-package', version: '[2,3)', {
         exclude group: 'xml-apis'
     }
 
